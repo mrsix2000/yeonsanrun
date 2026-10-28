@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>연산런 v0.8</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+<main class="container">
+  <header>
+    <h1>연산런</h1>
+    <p>매일 조금씩, 연산 실력을 키우자!</p>
+  </header>
+
+  <section id="settings">
+    <label for="grade">학년 선택</label>
+    <select id="grade">
+      <option value="3">초등학교 3학년</option>
+      <option value="4">초등학교 4학년</option>
+    </select>
+
+    <label for="type">연산 유형</label>
+    <select id="type"></select>
+
+    <label for="subtype">세부 유형</label>
+    <select id="subtype"></select>
+
+    <label for="total">문제 수</label>
+    <select id="total">
+      <option value="10">10문제</option>
+      <option value="20">20문제</option>
+      <option value="30">30문제</option>
+      <option value="50">50문제</option>
+    </select>
+
+    <button id="startBtn" class="primary">학습 시작</button>
+    <button id="historyBtn" class="secondary">학습 기록 보기</button>
+  </section>
+
+  <section id="game" hidden>
+    <div class="progress-header">
+      <span id="progress"></span>
+      <span id="timer"></span>
+    </div>
+
+    <div class="progress-track">
+      <div id="progressBar"></div>
+    </div>
+
+    <div class="question-card">
+      <h2 id="question"></h2>
+    </div>
+
+    <div class="answer-area">
+      <input id="answer" type="number"
+             inputmode="numeric" placeholder="정답">
+      <input id="remainder" type="number"
+             inputmode="numeric" placeholder="나머지" hidden>
+    </div>
+
+    <button id="checkBtn" class="primary">정답 확인</button>
+    <p id="result" aria-live="polite"></p>
+  </section>
+
+  <section id="summary" hidden>
+    <h2>학습 완료!</h2>
+
+    <div class="stats">
+      <div class="stat">
+        <strong id="accuracy"></strong>
+        <small>정답률</small>
+      </div>
+      <div class="stat">
+        <strong id="totalTime"></strong>
+        <small>풀이 시간</small>
+      </div>
+      <div class="stat">
+        <strong id="avgTime"></strong>
+        <small>평균 시간</small>
+      </div>
+    </div>
+
+    <h3 id="scoreText"></h3>
+    <div id="wrongList"></div>
+
+    <button id="retryBtn" class="primary">틀린 문제 다시 풀기</button>
+    <button class="secondary homeBtn">처음으로</button>
+  </section>
+
+  <section id="history" hidden>
+    <h2>학습 기록</h2>
+    <div id="historyList"></div>
+    <button id="clearBtn" class="danger">전체 기록 삭제</button>
+    <button class="secondary homeBtn">처음으로</button>
+  </section>
+</main>
+</body>
+</html>
