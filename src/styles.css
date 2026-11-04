@@ -5,3 +5,5 @@
 
 
 .progress-heading{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:20px;font-size:14px}.progress-track{height:12px;background:#e8eef9;border-radius:999px;overflow:hidden;margin:12px 0 20px}.progress-fill{height:100%;width:0;background:#245bdf;transition:width .18s ease}.result-score{font-size:24px;font-weight:800;color:#1747b6}#mistake-list{padding-left:22px;line-height:1.9}#result-panel h3{font-size:17px}.answer-row button{flex-shrink:0}@media(max-width:540px){.answer-row{flex-wrap:wrap}.answer-row input{width:100%;flex-basis:100%}.answer-row button{width:100%}.progress-heading{font-size:12px}}
+
+.auth-tabs{display:flex;gap:8px;margin:18px 0}.auth-tabs button{flex:1}#auth-form{display:grid;gap:10px;max-width:420px}#auth-form label{font-weight:650;margin-top:8px}#auth-form input{width:100%;padding:13px;border:1px solid #bac5d8;border-radius:10px;font-size:17px}#auth-form button{margin-top:12px}#auth-message{min-height:24px;line-height:1.6}button:disabled{opacity:.5;cursor:not-allowed}
