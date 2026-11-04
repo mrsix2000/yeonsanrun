@@ -1,3 +1,4 @@
+import {PLAN_OPTIONS,planPreview,subscriptionPreview} from './billing-preview.js?v=010-1';
 import {studentDashboard,parentDashboard,sessionTrend} from './dashboards.js?v=010-1';
 import {loadHistory,saveHistory,analyzeHistory} from './learning-history.js?v=010-1';
 import {STUDY_MODES,selectStudyTypes,diagnosticSummary} from './study-modes.js?v=010-1';
@@ -13,6 +14,15 @@ import {accountCapabilities,sessionIdentity} from './access.js?v=010-1';
 import {normalizeRoute,ROUTES} from './navigation.js?v=010-1';
 import {changeAccountEmail,changeAccountPassword,ACCOUNT_DELETION_STATUS} from './account.js?v=010-1';
 const $=id=>document.getElementById(id);
+const planChoice=$('plan-choice');
+planChoice.replaceChildren(...PLAN_OPTIONS.map(p=>new Option(p.label,p.id)));
+function renderPlanPreview(){
+ const plan=planPreview(planChoice.value),subscription=subscriptionPreview();
+ $('plan-detail').textContent=plan.label+' 구성 · 가격 미정 · 결제 비활성화';
+ $('subscription-status').textContent=subscription.notice;
+}
+planChoice.addEventListener('change',renderPlanPreview);
+renderPlanPreview();
 $('areas').replaceChildren(...AREAS.map(area=>{
   const item=document.createElement('div');item.className='area';
   const name=document.createElement('strong');name.textContent=area.name;
@@ -31,7 +41,7 @@ function renderRoute(){
   if(route==='home')renderStudentDashboard();
   $('site-nav').classList.remove('open');
   $('menu-toggle').setAttribute('aria-expanded','false');
-  document.title=({home:'연산런',practice:'연산 훈련',history:'학습 기록',auth:'회원가입·로그인'})[route]+' | 연산런';
+  document.title=({home:'연산런',practice:'연산 훈련',history:'학습 기록',plans:'무료 체험·요금제',auth:'회원가입·로그인'})[route]+' | 연산런';
 }
 window.addEventListener('hashchange',renderRoute);
 document.querySelectorAll('[data-route]').forEach(link=>link.addEventListener('click',()=>queueMicrotask(renderRoute)));
