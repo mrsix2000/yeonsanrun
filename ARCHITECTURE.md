@@ -15,3 +15,5 @@
 - 005 검증 완료: 5문제 세션 상태와 결과 요약은 src/session.js에서 관리. 사용자 브라우저 검수 8개 항목 통과. 006의 Supabase Auth는 별도 승인 전까지 미도입.
 
 - 006: src/auth.js는 Supabase Auth의 가입·로그인·로그아웃·세션·변경 이벤트를 담당. src/supabase-config.js에는 공개 URL과 publishable key만 허용. 인증 화면은 #auth 해시 경로. 공개 설정이 없으면 인증을 비활성화하고 안내. 외부 CDN ESM 의존성은 브라우저 실제 검증 필요. 학습 기록 저장 및 회원 프로필 DB는 미도입.
+
+- 006 실제 연결: Supabase 프로젝트 phydtapmwwonunqgaupx (서울), src/supabase-config.js 공개 URL/publishable key 사용. 회원가입·이메일 확인·로그인·세션 지속·로그아웃 브라우저 검수 완료. 인증 후 이동 주소는 staging GitHub Pages로 사용자 설정. 회원 프로필/학습 기록 DB 및 RLS는 후속 작업에서 설계·검증.
