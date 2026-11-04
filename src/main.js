@@ -1,3 +1,4 @@
+import {studentDashboard,parentDashboard,sessionTrend} from './dashboards.js?v=010-1';
 import {loadHistory,saveHistory,analyzeHistory} from './learning-history.js?v=010-1';
 import {STUDY_MODES,selectStudyTypes,diagnosticSummary} from './study-modes.js?v=010-1';
 import {availableTypes,createTypedQuestion,gradeTypedAnswer,isValidAnswerInput} from './typed-engine.js?v=010-1';
@@ -27,6 +28,7 @@ function renderRoute(){
     else link.removeAttribute('aria-current');
   }
   if(route==='history')renderLearningHistory();
+  if(route==='home')renderStudentDashboard();
   $('site-nav').classList.remove('open');
   $('menu-toggle').setAttribute('aria-expanded','false');
   document.title=({home:'연산런',practice:'연산 훈련',history:'학습 기록',auth:'회원가입·로그인'})[route]+' | 연산런';
@@ -122,11 +124,22 @@ function showResult(){
   list.append(item);
  }
 }
+function renderStudentDashboard(){
+ const data=studentDashboard(storedRecords);
+ $('student-dashboard').textContent=data.headline+' · 최근 7일 '+data.weeklySessions+'회';
+ $('student-guidance').textContent=data.guidance;
+}
 function renderLearningHistory(){
  const data=analyzeHistory(storedRecords);
  $('history-summary').textContent=data.sessions+'회 훈련 · '+data.total+'문제 · 정답률 '+data.accuracy+'% · 평균 '+data.avgSeconds+'초/문제';
  $('history-periods').textContent='오늘 '+data.periods.day+'회 · 최근 7일 '+data.periods.week+'회 · 최근 30일 '+data.periods.month+'회';
  $('history-guidance').textContent=data.guidance;
+ const trend=$('history-trend');trend.replaceChildren();
+ for(const entry of sessionTrend(storedRecords)){
+  const li=document.createElement('li');
+  li.textContent=new Date(entry.at).toLocaleDateString('ko-KR')+' · '+entry.accuracy+'% · '+entry.mode;
+  trend.append(li);
+ }
  const list=$('history-types');list.replaceChildren();
  for(const type of data.byType){
   const li=document.createElement('li');
@@ -317,6 +330,9 @@ async function refreshFamily(){
   if(profileUserId!==userId)return;
   hasLinkedChildren=links.length>0;updateAccessUI();
   const list=$('family-links');list.replaceChildren();
+  const dashboard=parentDashboard(links);
+  $('parent-dashboard-notice').textContent=dashboard.notice;
+  $('parent-dashboard-count').textContent='연결된 자녀 '+dashboard.children.length+'명';
   for(const link of links){const item=document.createElement('li');item.textContent=link.child_alias+' · 연결됨';list.append(item);}
   if(!links.length){const item=document.createElement('li');item.textContent='연결된 자녀가 없습니다.';list.append(item);}
  }catch(error){if(profileUserId===userId)$('family-message').textContent='목록 조회 실패: '+error.message;}
