@@ -79,3 +79,7 @@
 - src/typed-engine.js: availableTypes/createTypedQuestion/gradeTypedAnswer/isValidAnswerInput; 기존 자연수 엔진과 신규 분수·소수·정수 등 엔진 연결.
 - src/main.js: 유형 선택 셀렉트, 자연수만 자릿수·받아올림 설정 노출, 5문제 세션 공통 처리, performance.now 기반 문항별 시간 측정.
 - src/session.js: 시도마다 typeId/durationMs 저장(메모리), 합산 시간 계산. 학습 기록 DB 저장 없음.
+
+## 021~025 학습 모드
+- src/study-modes.js: 5개 모드, 진단 5개 대표 유형, 메모리 내 오답률 기반 취약/추천 유형, 날짜별 챌린지 유형. localStorage/DB 사용 없음.
+- src/main.js: 모드 선택과 기존 5문제 세션 연결. 진단은 5개 유형을 한 문제씩 제시. 최근 기록은 현재 페이지 생존 동안만 메모리에 보유.
