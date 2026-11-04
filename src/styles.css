@@ -11,3 +11,13 @@
 .profile-section{border-top:1px solid #e5eaf3;margin-top:24px;padding-top:20px}.profile-section label{display:block;font-weight:650;margin:12px 0 8px}.profile-section select{display:block;width:100%;max-width:420px;padding:13px;border:1px solid #bac5d8;border-radius:10px;background:#fff;font:inherit;margin-bottom:12px}#profile-message{line-height:1.6}
 
 #family-alias{display:block;width:100%;max-width:420px;padding:13px;border:1px solid #bac5d8;border-radius:10px;font:inherit;margin:10px 0 14px}#family-message{line-height:1.6}
+
+/* 035: accessible responsive dashboards */
+#student-dashboard{font-size:clamp(18px,3vw,24px);font-weight:750;color:#1747b6}
+#history-trend,#history-types{padding-left:22px;line-height:1.8;overflow-wrap:anywhere}
+#history-summary{font-size:clamp(17px,3vw,22px);font-weight:700}
+#history-guidance,#student-guidance{line-height:1.65}
+select{max-width:100%;width:100%;padding:12px;border:1px solid #bac5d8;border-radius:10px;background:#fff;font:inherit;margin:8px 0 14px}
+select:focus-visible{outline:3px solid #8bb5ff;outline-offset:2px}
+@media(max-width:540px){.panel{overflow-wrap:anywhere}#history-trend,#history-types{font-size:14px}button{min-height:44px}}
+@media(prefers-reduced-motion:reduce){.progress-fill{transition:none}}
