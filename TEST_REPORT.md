@@ -86,3 +86,8 @@
 - develop Actions 41849056652 completed/success: JavaScript syntax gate + npm test.
 - 신규 무결성 검사: import 존재·버전, HTML id 중복/누락, 비밀키 패턴.
 - 검증 한계: 브라우저 실제 클릭·인증 네트워크·DB RLS는 정적 검사만으로 보장 불가. E2E 및 테스트 DB 구축은 후속 작업.
+
+## 008 DB 적용 후 테스트
+- Supabase migrations 3개 success. RLS 정책 2개 확인, anon RPC 실행 false, authenticated RPC true, authenticated 직접 INSERT false, invite SELECT false.
+- develop CI run 41851404810 completed/success (단위 및 무결성 테스트 포함). 이전 중간 커밋 CI 실패는 후속 수정으로 해소.
+- 실제 2계정 RPC 연결/코드 만료/시도 제한/브라우저 사용자 검수: 미실행. 상태 구현 완료·미검증.
