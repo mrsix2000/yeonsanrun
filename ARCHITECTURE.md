@@ -73,3 +73,9 @@
 ## 012~014 콘텐츠 엔진 초안
 - src/curriculum-engine.js: 20개 유형의 순수 문제 생성 createCurriculumQuestion(typeId, random), 채점 gradeCurriculumAnswer(question,raw). 분수 기약분수 동치 허용, 소수·정수 수치 비교. 기존 src/engine.js API 유지.
 - 현재 신규 20개 유형은 UI에 연결되지 않음. catalog.status available은 생성기 존재 의미이며 실제 화면에서 사용 가능하다는 뜻은 아님. 향후 016 통합 시 UI 노출 예정.
+
+## 015~020 문제풀이 통합
+- src/catalog.js: 35개 유형의 학년·난이도(level 1~3)·선행 유형 관계; 현재 생성기 구현 24개, 11개 계획.
+- src/typed-engine.js: availableTypes/createTypedQuestion/gradeTypedAnswer/isValidAnswerInput; 기존 자연수 엔진과 신규 분수·소수·정수 등 엔진 연결.
+- src/main.js: 유형 선택 셀렉트, 자연수만 자릿수·받아올림 설정 노출, 5문제 세션 공통 처리, performance.now 기반 문항별 시간 측정.
+- src/session.js: 시도마다 typeId/durationMs 저장(메모리), 합산 시간 계산. 학습 기록 DB 저장 없음.
