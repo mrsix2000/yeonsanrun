@@ -31,3 +31,8 @@
 - 사용자 요청으로 상태 표시·오류 UI를 5문제 연속 풀이, 진행 바, 제출 즉시 다음 문제, 결과 및 오답 목록으로 교체.
 - src/session.js, tests/session-flow.test.mjs 추가. src/main.js, index.html, src/styles.css, tests/session-ui.test.mjs, tests/navigation-markup.test.mjs 수정.
 - 상태: 구현 완료·미검증. DB/운영 main 변경 없음.
+
+## 005 최종 검증 (2026-11-04)
+- 답안 제출 정규식 오류 수정 후 자동 테스트·staging 배포 성공 (Actions 41835783943).
+- 사용자 5문제 연속 풀이 기능 검수 8개 항목 모두 정상 확인.
+- 최종 상태: 검증 완료. DB/운영 main 변경 없음.
