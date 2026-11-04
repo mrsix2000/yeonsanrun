@@ -72,3 +72,9 @@
 - 변경: index.html, src/main.js, src/auth.js, src/styles.css, tests/navigation-markup.test.mjs.
 - 학부모 자녀 연결 상태 미리보기 구현. 연결 코드/서버 검증/DB 쓰기는 아직 없음. 운영 main 변경 없음.
 - 상태: 구현 완료·미검증.
+
+## 공통 자동 테스트 시스템 점검·보강 (2026-11-04)
+- 기존: develop push/PR CI 및 staging 배포 전 npm test 존재.
+- 추가: tests/build-integrity.test.mjs, .github/workflows/ci.yml 구문 검사 단계.
+- GitHub Actions develop run 41849056652 completed/success.
+- 운영 main/실제 DB 변경 없음. 008 상태 유지.
