@@ -1,5 +1,5 @@
 import {AREAS,TOTAL_TYPES} from './catalog.js';
-import {OPERATIONS,createQuestion,gradeAnswer} from './engine.js';
+import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js';
 import {normalizeRoute,ROUTES} from './navigation.js';
 const $=id=>document.getElementById(id);
 $('areas').replaceChildren(...AREAS.map(area=>{
@@ -27,7 +27,7 @@ $('menu-toggle').addEventListener('click',()=>{
   const open=$('site-nav').classList.toggle('open');
   $('menu-toggle').setAttribute('aria-expanded',String(open));
 });
-let operation='add',question=null,answered=0,correct=0,locked=false;
+let operation='add',digits=1,condition='any',question=null,answered=0,correct=0,locked=false;
 const operationButtons=OPERATIONS.map(op=>{
   const button=document.createElement('button');
   button.type='button';button.className='operation-button secondary';button.textContent=op.label;
@@ -44,11 +44,43 @@ function selectOperation(id){
     button.setAttribute('aria-pressed',String(active));
   }
   $('selected-operation').textContent=OPERATIONS.find(op=>op.id===id).label+' 훈련';
+  resetSelection();
+  updateConditionControls();
+}
+function resetSelection(){
   $('practice-session').hidden=true;
   $('begin-practice').hidden=false;
+  question=null;answered=0;correct=0;locked=false;
 }
+const digitButtons=DIGITS.map(value=>{
+ const button=document.createElement('button');button.type='button';button.className='digit-button secondary';
+ button.textContent=value+'자리';button.dataset.digits=String(value);
+ button.addEventListener('click',()=>selectDigits(value));return button;
+});
+$('digit-options').replaceChildren(...digitButtons);
+function selectDigits(value){
+ digits=value;
+ for(const button of digitButtons){const active=Number(button.dataset.digits)===value;
+  button.classList.toggle('selected',active);button.setAttribute('aria-pressed',String(active));}
+ resetSelection();updateConditionControls();
+}
+function updateConditionControls(){
+ const supported=operation==='add'||operation==='subtract';
+ const withAllowed=supported&&!(operation==='subtract'&&digits===1);
+ $('condition-controls').hidden=!supported;
+ $('condition-with').disabled=!withAllowed;
+ if(!supported||(condition==='with'&&!withAllowed))condition='any';
+ for(const button of document.querySelectorAll('[data-condition]')){
+  const active=button.dataset.condition===condition;
+  button.classList.toggle('selected',active);button.setAttribute('aria-pressed',String(active));
+ }
+}
+for(const button of document.querySelectorAll('[data-condition]')){
+ button.addEventListener('click',()=>{condition=button.dataset.condition;updateConditionControls();resetSelection()});
+}
+
 function nextQuestion(){
-  question=createQuestion(operation);locked=false;
+  question=createQuestion(operation,Math.random,{digits,condition});locked=false;
   $('question').textContent=question.text;
   $('answer').value='';$('feedback').textContent='';
   $('answer-form').hidden=false;$('next').hidden=true;$('answer').focus();
@@ -56,11 +88,11 @@ function nextQuestion(){
 function startPractice(){
   answered=0;correct=0;
   $('practice-session').hidden=false;$('begin-practice').hidden=true;
-  $('score').textContent=`현재 점수: 0/0 · 전체 ${TOTAL_TYPES}개 유형 중 자연수 기초 4개 체험`;
+  $('score').textContent=`현재 점수: 0/0 · 전체 ${TOTAL_TYPES}개 유형 중 자연수 ${digits}자리 ${OPERATIONS.find(op=>op.id===operation).label} 체험`;
   nextQuestion();
 }
 $('start').addEventListener('click',()=>{
-  location.hash='practice';renderRoute();selectOperation('add');startPractice();
+  location.hash='practice';renderRoute();selectOperation('add');selectDigits(1);startPractice();
 });
 $('begin-practice').addEventListener('click',startPractice);
 $('history-to-practice').addEventListener('click',()=>{location.hash='practice';renderRoute()});
@@ -72,4 +104,4 @@ $('answer-form').addEventListener('submit',event=>{
   $('answer-form').hidden=true;$('next').hidden=false;
 });
 $('next').addEventListener('click',nextQuestion);
-selectOperation('add');renderRoute();
+selectOperation('add');selectDigits(1);renderRoute();

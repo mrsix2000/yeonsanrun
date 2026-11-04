@@ -1,17 +1,6 @@
 # DEVELOPMENT LOG
-## 001 (2026-11-04)
-- 기본 시스템 구축. 자동 테스트/배포 및 사용자 검수 통과. 검증 완료.
-## 002 (2026-11-04)
-- 공통 화면/내비게이션. 사용자 보고 오류 수정 후 재배포.
-- 사용자 최종 검수 8개 항목 모두 정상 확인. 검증 완료.
-## 003 (2026-11-04)
-- 자연수 사칙연산 4개 기초 유형 선택/생성/채점 구현
-- 변경: index.html, src/main.js, src/engine.js, src/styles.css, tests/operations.test.mjs 및 관리 문서
-- DB 변경 없음, 운영 배포 없음
-- 상태: 구현 완료·미검증. CI 및 사용자 검수 필요.
-
-## 003 최종 검증 (2026-11-04)
-- 기존 회귀 테스트의 고정 자산 버전 단언 수정 후 staging 재배포 성공
-- staging Actions run 41830115160: completed/success
-- 사용자 재검수 5개 항목 모두 정상 확인
-- 상태: 검증 완료. 운영 main/DB 변경 없음.
+- 001~003: 검증 완료 (각 작업 사용자 검수 및 staging CI 통과).
+## 004 자연수 연산 난이도 및 자릿수 확장 (2026-11-04)
+- 사용자 승인 후 구현. 1~3자리 선택, 덧셈/뺄셈 조건 선택, 곱셈 n자리×1자리, 나눗셈 몫 n자리·제수 1자리.
+- 변경: src/engine.js, src/main.js, index.html, src/styles.css, tests/navigation-markup.test.mjs; 추가 tests/difficulty.test.mjs 및 관리 문서.
+- DB 변경 없음. 운영 배포 없음. 상태: 구현 완료·미검증.
