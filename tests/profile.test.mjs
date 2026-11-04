@@ -11,7 +11,7 @@ test('nine distinct grades E1-E6 and M1-M3',()=>{
  assert.equal(isValidGrade('M4'),false);assert.equal(isValidGrade(''),false);
  assert.equal(gradeLabel('M2'),'중학교 2학년');
 });
-test('profile UI is preview-only before DB approval',()=>{
+test('profile UI supports persisted grade after DB approval',()=>{
  for(const id of ['profile-grade','profile-preview','profile-message'])
   assert.match(html,new RegExp('id="'+id+'"'));
  assert.match(main,/학년 미리보기/);
