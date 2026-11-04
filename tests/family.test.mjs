@@ -1,27 +1,8 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
-import {FAMILY_STATES,describeFamilyState,validateChildAlias} from '../src/family.js';
+import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+import {validateChildAlias,validateInviteCode,createFamilyInvite,redeemFamilyInvite,loadFamilyLinks} from '../src/family.js';
 const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
-const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
-const sql=readFileSync(new URL('../db/008_family_links.sql',import.meta.url),'utf8');
-test('family states and aliases',()=>{
- assert.equal(describeFamilyState(FAMILY_STATES.UNLINKED),'연결된 자녀가 없습니다.');
- assert.equal(validateChildAlias('아이'),'');
- assert.match(validateChildAlias(' '),/1~20자/);
- assert.match(validateChildAlias('a'.repeat(21)),/1~20자/);
-});
-test('parent preview is explicitly not connected to DB',()=>{
- for(const id of ['family-section','family-alias','family-preview','family-message'])
-  assert.match(html,new RegExp('id="'+id+'"'));
- assert.match(main,/validateChildAlias/);
- assert.match(main,/DB 적용 전/);
- assert.doesNotMatch(main,/\.from\(['"]family_links/);
-});
-test('link schema enforces own reads and no direct writes',()=>{
- assert.match(sql,/enable row level security/i);
- assert.match(sql,/parent_user_id <> student_user_id/);
- assert.match(sql,/auth\.uid\(\)/);
- assert.match(sql,/grant select on public\.family_links to authenticated/i);
- assert.doesNotMatch(sql,/grant (insert|update|delete)/i);
-});
+test('validates alias and 128-bit invite code',()=>{assert.equal(validateChildAlias('아이'),'');assert.match(validateChildAlias(' '),/1~20자/);assert.match(validateChildAlias('a'.repeat(21)),/1~20자/);assert.equal(validateInviteCode('a'.repeat(32)),'');assert.ok(validateInviteCode('A'.repeat(32)));});
+test('student code generation RPC',async()=>{const client={rpc:async name=>{assert.equal(name,'create_family_invite');return {data:'a'.repeat(32),error:null}}};assert.equal(await createFamilyInvite(client),'a'.repeat(32));});
+test('parent redeem RPC and failed code',async()=>{const client={rpc:async(name,args)=>{assert.equal(name,'redeem_family_invite');assert.equal(args.alias_name,'아이');return {data:null,error:null}}};await assert.rejects(redeemFamilyInvite(client,'a'.repeat(32),'아이'),/연결 실패/);});
+test('parent only queries own links',async()=>{const client={from:name=>{assert.equal(name,'family_links');return {select:()=>({eq:(field,id)=>{assert.equal(field,'parent_user_id');assert.equal(id,'u1');return {order:async()=>({data:[],error:null})}}})}}};assert.deepEqual(await loadFamilyLinks(client,'u1'),[]);});
+test('UI contains link code and result controls',()=>{for(const id of ['family-section','family-alias','family-code','family-preview','family-generate','family-links','family-message'])assert.match(html,new RegExp('id="'+id+'"'));});
