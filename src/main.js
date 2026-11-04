@@ -1,11 +1,12 @@
-import {AREAS,TOTAL_TYPES} from './catalog.js?v=008-2';
-import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=008-2';
-import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=008-2';
-import {isAuthConfigured,validateCredentials,signUp,signIn,signOut,currentSession,subscribeAuthChange} from './auth.js?v=008-2';
-import {GRADES,gradeLabel,loadStudentProfile,saveStudentProfile} from './profile.js?v=008-2';
-import {validateChildAlias,validateInviteCode,createFamilyInvite,redeemFamilyInvite,loadFamilyLinks} from './family.js?v=008-2';
-import {getAuthClient} from './auth.js?v=008-2';
-import {normalizeRoute,ROUTES} from './navigation.js?v=008-2';
+import {AREAS,TOTAL_TYPES} from './catalog.js?v=009-1';
+import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=009-1';
+import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=009-1';
+import {isAuthConfigured,validateCredentials,signUp,signIn,signOut,currentSession,subscribeAuthChange} from './auth.js?v=009-1';
+import {GRADES,gradeLabel,loadStudentProfile,saveStudentProfile} from './profile.js?v=009-1';
+import {validateChildAlias,validateInviteCode,createFamilyInvite,redeemFamilyInvite,loadFamilyLinks} from './family.js?v=009-1';
+import {getAuthClient} from './auth.js?v=009-1';
+import {accountCapabilities,sessionIdentity} from './access.js?v=009-1';
+import {normalizeRoute,ROUTES} from './navigation.js?v=009-1';
 const $=id=>document.getElementById(id);
 $('areas').replaceChildren(...AREAS.map(area=>{
   const item=document.createElement('div');item.className='area';
@@ -145,10 +146,18 @@ function setAuthMode(mode){
  }
  $('auth-message').textContent='';
 }
-let profileUserId=null,profileRequestId=0;
+let profileUserId=null,profileRequestId=0,hasStudentProfile=false,hasLinkedChildren=false;
+function updateAccessUI(){
+ const access=accountCapabilities({userId:profileUserId,hasStudentProfile,hasLinkedChildren});
+ $('family-generate').hidden=!access.canIssueStudentCode;
+ $('family-role-message').textContent=!access.signedIn?'':access.canIssueStudentCode?'학생 연결 코드를 발급할 수 있습니다.':'학생 연결 코드 발급은 학년 저장 후 가능합니다.';
+ $('account-access-status').textContent=!access.signedIn?'로그인이 필요합니다.':(access.canIssueStudentCode?'학생 기능 사용 가능 · ':'학생 학년 미설정 · ')+(access.canViewLinkedChildren?'연결된 자녀 조회 가능':'연결된 자녀 없음');
+}
+
 async function refreshProfile(session){
  const requestId=++profileRequestId;
- profileUserId=session?.user?.id||null;
+ profileUserId=sessionIdentity(session);
+ hasStudentProfile=false;updateAccessUI();
  $('profile-grade').value='';
  $('profile-message').textContent=profileUserId?'학년 정보를 불러오는 중입니다.':'';
  if(!profileUserId)return;
@@ -157,15 +166,16 @@ async function refreshProfile(session){
   const grade=await loadStudentProfile(client,profileUserId);
   if(requestId!==profileRequestId)return;
   $('profile-grade').value=grade;
+  hasStudentProfile=!!grade;updateAccessUI();
   $('profile-message').textContent=grade?'저장된 학년: '+gradeLabel(grade):'학년이 아직 설정되지 않았습니다.';
  }catch(error){if(requestId===profileRequestId)$('profile-message').textContent='학년 조회 실패: '+(error.message||'다시 시도해 주세요.');}
 }
 function displaySession(session){
- const loggedIn=!!session?.user;
+ const loggedIn=!!session?.user?.id;
  $('auth-member').hidden=!loggedIn;
  $('profile-section').hidden=!loggedIn;
  $('family-section').hidden=!loggedIn;
- if(!loggedIn){$('family-alias').value='';$('family-message').textContent='';}
+ if(!loggedIn){$('family-alias').value='';$('family-code').value='';$('family-message').textContent='';$('family-links').replaceChildren();hasLinkedChildren=false;hasStudentProfile=false;updateAccessUI();}
  if((session?.user?.id||null)!==profileUserId){refreshProfile(session);if(loggedIn)refreshFamily();}
  $('auth-guest').hidden=loggedIn;
  $('auth-user-email').textContent=loggedIn?session.user.email||'이메일 확인 중':'';
@@ -209,7 +219,7 @@ $('profile-preview').addEventListener('click',async()=>{
  try{
   const client=await getAuthClient();
   const saved=await saveStudentProfile(client,userId,grade);
-  if(profileUserId===userId)$('profile-message').textContent='저장 완료: '+gradeLabel(saved);
+  if(profileUserId===userId){hasStudentProfile=true;updateAccessUI();$('profile-message').textContent='저장 완료: '+gradeLabel(saved);}
  }catch(error){if(profileUserId===userId)$('profile-message').textContent='저장 실패: '+(error.message||'다시 시도해 주세요.');}
  finally{button.disabled=false;}
 });
@@ -220,13 +230,14 @@ async function refreshFamily(){
  try{
   const links=await loadFamilyLinks(await getAuthClient(),userId);
   if(profileUserId!==userId)return;
+  hasLinkedChildren=links.length>0;updateAccessUI();
   const list=$('family-links');list.replaceChildren();
   for(const link of links){const item=document.createElement('li');item.textContent=link.child_alias+' · 연결됨';list.append(item);}
   if(!links.length){const item=document.createElement('li');item.textContent='연결된 자녀가 없습니다.';list.append(item);}
  }catch(error){if(profileUserId===userId)$('family-message').textContent='목록 조회 실패: '+error.message;}
 }
 $('family-generate').addEventListener('click',async()=>{
- if(familyBusy||!profileUserId)return;
+ if(familyBusy||!accountCapabilities({userId:profileUserId,hasStudentProfile}).canIssueStudentCode)return;
  familyBusy=true;$('family-generate').disabled=true;
  try{const code=await createFamilyInvite(await getAuthClient());$('family-message').textContent='학생 연결 코드 (10분 유효): '+code+' · 이 코드를 학부모에게 안전하게 전달하세요.';}
  catch(error){$('family-message').textContent='코드 발급 실패: '+error.message;}
