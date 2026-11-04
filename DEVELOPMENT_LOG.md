@@ -36,3 +36,8 @@
 - 답안 제출 정규식 오류 수정 후 자동 테스트·staging 배포 성공 (Actions 41835783943).
 - 사용자 5문제 연속 풀이 기능 검수 8개 항목 모두 정상 확인.
 - 최종 상태: 검증 완료. DB/운영 main 변경 없음.
+
+## 006 회원가입·로그인 기반 구축 (2026-11-04)
+- 사용자 승인으로 개발 착수. #auth 화면, 회원가입·로그인·로그아웃, 세션 조회/유지 및 상태 표시, 인증 오류 안내 구현.
+- 추가: src/auth.js, src/supabase-config.js, tests/auth.test.mjs. 수정: index.html, src/main.js, src/navigation.js, src/styles.css, tests/navigation.test.mjs, tests/navigation-markup.test.mjs 및 관리 문서.
+- Supabase 프로젝트 공개 URL/key 미제공으로 실제 계정 연결·이메일 인증은 미검증. DB/운영 main 변경 없음. 상태: 구현 완료·미검증.
