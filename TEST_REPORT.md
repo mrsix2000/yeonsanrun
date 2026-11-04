@@ -1,20 +1,14 @@
 # TEST REPORT
-- 자동 테스트 코드 작성: 영역 수, 유형 합계, 문제 생성 경계값, 채점
-- GitHub Actions: 설정 파일 작성, 실행 결과 미확인
-- 실제 브라우저/모바일 테스트: 미실시
-- 회귀 테스트: 신규 코드 기준으로 추후 시행 (기존 main은 변경 없음)
-- DB/인증 권한 테스트: 대상 기능 미구현
-- 사용자 승인: 대기
-
-## 테스트 배포 설정 (2026-11-04)
-- 테스트 저장소 생성 확인, workflow 파일 GitHub 반영 확인
-- 실제 GitHub Actions 실행 성공 여부: 미검증
-- GitHub Pages URL 활성화: 미검증
-- 사용자 브라우저 테스트: 미실시
-
-## GitHub Actions 검증 결과 (2026-11-04)
-- 테스트 저장소 workflow run #2 (41827045024): completed/success
-- verify job: success, Run automated tests 단계: success
-- deploy job: success, Deploy Pages 단계: success
-- 배포 URL: https://mrsix2000.github.io/yeonsanrun-staging/
-- 실제 사용자 브라우저 및 모바일 검증: 대기
+## 001 기본 시스템 구축 — 최종 검증 (2026-11-04)
+- 자동 테스트: GitHub Actions staging run #2 (41827045024) verify 성공
+- 테스트 배포: 동일 run의 deploy 성공
+- 테스트 사이트: https://mrsix2000.github.io/yeonsanrun-staging/
+- 사용자 화면 검수: 5개 항목 모두 정상 동작한다고 사용자 직접 보고
+  1. 첫 화면 및 8개 영역 표시
+  2. 훈련 체험 시작 동작
+  3. 정답 판정
+  4. 오답 판정 및 정답 표시
+  5. 다음 문제 및 점수 표시
+- 판정: 001 검증 완료
+- 제한: 모바일 기기별 호환성은 별도 미검증. DB/Auth/RLS는 미구현으로 대상 아님.
+- 운영 배포: 미실시, 사용자 승인 전까지 보류
