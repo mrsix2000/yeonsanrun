@@ -138,7 +138,7 @@ $('history-to-practice').addEventListener('click',()=>{location.hash='practice';
 $('answer-form').addEventListener('submit',event=>{
  event.preventDefault();if(locked||!question||session.complete)return;
  const input=$('answer').value.trim();
- if(!isValidAnswerInput(selectedType,input)){$('answer').focus();return}
+ if(!isValidAnswerInput(question.typeId,input)){$('answer').focus();return}
  locked=true;
  const ok=gradeTypedAnswer(question,input);
  const durationMs=Math.max(0,Math.round(performance.now()-questionStartedAt));
