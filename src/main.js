@@ -1,6 +1,6 @@
-import {AREAS,TOTAL_TYPES} from './catalog.js?v=004-fix1';
-import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=004-fix1';
-import {normalizeRoute,ROUTES} from './navigation.js?v=004-fix1';
+import {AREAS,TOTAL_TYPES} from './catalog.js?v=004-fix2';
+import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=004-fix2';
+import {normalizeRoute,ROUTES} from './navigation.js?v=004-fix2';
 const $=id=>document.getElementById(id);
 $('areas').replaceChildren(...AREAS.map(area=>{
   const item=document.createElement('div');item.className='area';
