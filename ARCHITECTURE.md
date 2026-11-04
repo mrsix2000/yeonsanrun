@@ -42,3 +42,7 @@
 - family_link_attempts: 계정별 15분 5회 제한. 잘못된 코드에는 NULL 반환해 시도 횟수 트랜잭션 보존.
 - create_family_invite, redeem_family_invite RPC: SECURITY DEFINER, search_path='', extensions crypto 명시, auth.uid() 확인, authenticated만 EXECUTE.
 - 아직 학부모의 학습 기록 조회 권한은 없음. 학생 코드 발급은 학년 프로필 보유 필요.
+
+## 008 최종 검증
+- 학부모 및 학생 각각 연결 1건 조회, 무관한 UUID 역할 0건 조회. family_links/family_invites/family_link_attempts RLS 활성.
+- 관계 직접 쓰기 권한 없음, 초대 코드 직접 조회 불가, anon RPC 실행 불가. 운영 main 미변경.
