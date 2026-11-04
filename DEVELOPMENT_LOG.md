@@ -118,3 +118,9 @@
 ## 012~014 빠른 연속 개발 (2026-11-05)
 - src/curriculum-engine.js 및 tests/curriculum-engine.test.mjs 신규 생성, src/catalog.js 가용 상태 갱신, tests/catalog.test.mjs 회귀 수정.
 - 첫 CI에서 새 모듈의 캐시 버전 누락으로 실패하여 수정. 최종 CI 결과 확인 대기. UI 연결·스테이징 배포 미완료.
+
+## 015~020 연속 개발 (2026-11-05)
+- 015 선행 유형·난이도 규칙 정의, 016~017 통합 문제 생성·채점·입력 검증, 018 기존 자연수 자릿수/조건 유지, 019 문항별 시간 측정, 020 통합 회귀 테스트.
+- src/catalog.js, src/main.js, src/session.js, index.html, tests/answer-submission.test.mjs, tests/session-ui.test.mjs 수정; src/typed-engine.js, tests/typed-engine.test.mjs 생성.
+- 기존 테스트의 구형 코드 패턴 기대 및 분수 입력 정규식 문제 수정. CI 41934745630 성공(시간 기록 커밋 직전); 최종 CI/스테이징 확인 별도.
+- 운영 main, 운영 DB 변경 없음. 실제 화면 사용자 검수 전.
