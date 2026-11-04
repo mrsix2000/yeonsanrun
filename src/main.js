@@ -1,8 +1,8 @@
-import {AREAS,TOTAL_TYPES} from './catalog.js?v=006-1';
-import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=006-1';
-import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=006-1';
+import {AREAS,TOTAL_TYPES} from './catalog.js?v=006-2';
+import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=006-2';
+import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=006-2';
 import {isAuthConfigured,validateCredentials,signUp,signIn,signOut,currentSession,subscribeAuthChange} from './auth.js?v=006-2';
-import {normalizeRoute,ROUTES} from './navigation.js?v=006-1';
+import {normalizeRoute,ROUTES} from './navigation.js?v=006-2';
 const $=id=>document.getElementById(id);
 $('areas').replaceChildren(...AREAS.map(area=>{
   const item=document.createElement('div');item.className='area';
