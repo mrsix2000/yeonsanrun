@@ -24,6 +24,6 @@ test('016: actual practice UI includes selector and timing',()=>{
  const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
  assert.match(html,/id="curriculum-type"/);
  assert.match(html,/id="natural-controls"/);
- assert.match(main,/createTypedQuestion\(selectedType/);
+ assert.match(main,/createTypedQuestion\(nextType/);
  assert.match(main,/performance\.now\(\)/);
 });
