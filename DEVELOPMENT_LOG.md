@@ -124,3 +124,8 @@
 - src/catalog.js, src/main.js, src/session.js, index.html, tests/answer-submission.test.mjs, tests/session-ui.test.mjs 수정; src/typed-engine.js, tests/typed-engine.test.mjs 생성.
 - 기존 테스트의 구형 코드 패턴 기대 및 분수 입력 정규식 문제 수정. CI 41934745630 성공(시간 기록 커밋 직전); 최종 CI/스테이징 확인 별도.
 - 운영 main, 운영 DB 변경 없음. 실제 화면 사용자 검수 전.
+
+## 015~020 사용자 검수 확정 및 021~025 구현 (2026-11-05)
+- 사용자가 015~020 스테이징 화면 5개 항목 모두 통과 보고. 015~020 검증 완료로 갱신.
+- 021~025: src/study-modes.js, tests/study-modes.test.mjs 신규 생성, src/main.js 및 index.html 변경. 운영 main/DB 변경 없음.
+- 021~025 실제 화면 검수 전까지 구현 완료·미검증.
