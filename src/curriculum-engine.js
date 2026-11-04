@@ -1,5 +1,5 @@
 // 012-014: Standalone curriculum generators. Pure functions; no browser or DB dependencies.
-import {getContentType} from './catalog.js';
+import {getContentType} from './catalog.js?v=010-1';
 const pick=(random,min,max)=>min+Math.floor(Math.max(0,Math.min(.999999999,Number(random())||0))*(max-min+1));
 const gcd=(a,b)=>b?gcd(b,a%b):Math.abs(a);
 const fraction=(a,b)=>{if(b===0)throw new RangeError('zero denominator');const sign=b<0?-1:1,d=gcd(a,b);return (a*sign/d)+'/'+(Math.abs(b)/d)};
