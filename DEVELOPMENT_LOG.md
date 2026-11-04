@@ -59,3 +59,9 @@
 - 사용자 별도 DB 적용 승인 후 Supabase migration create_student_profiles_007 성공.
 - RLS 활성화/정책 3개 확인, 기존 행 0개. src/profile.js 저장·불러오기 구현, src/main.js·index.html·src/auth.js·tests 수정, 버전 007-2.
 - 운영 main 변경 없음. staging CI 및 사용자 실기기 검수 대기. 상태: 구현 완료·미검증.
+
+## 007 최종 검증
+- 사용자 실제 브라우저 검수 5개(로그인 표시/저장/새로고침/재로그인/학년 변경) 모두 통과 보고.
+- DB 권한 점검에서 authenticated DELETE/TRUNCATE 권한 발견. 승인된 007 보안 범위 내 restrict_student_profiles_privileges_007 migration 적용, 권한 회수 후 SELECT/INSERT/UPDATE만 허용 확인.
+- RLS 조회 실증: 실제 사용자 본인 1건 조회, 다른 사용자 UUID 역할 조회 0건. 운영 main 변경 없음.
+- 상태: 검증 완료. 008은 별도 승인 대기.
