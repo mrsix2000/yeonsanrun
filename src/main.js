@@ -1,7 +1,8 @@
-import {AREAS,TOTAL_TYPES} from './catalog.js?v=005-fix1';
-import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=005-fix1';
-import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=005-fix1';
-import {normalizeRoute,ROUTES} from './navigation.js?v=005-fix1';
+import {AREAS,TOTAL_TYPES} from './catalog.js?v=006-1';
+import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=006-1';
+import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=006-1';
+import {isAuthConfigured,validateCredentials,signUp,signIn,signOut,currentSession,subscribeAuthChange} from './auth.js?v=006-1';
+import {normalizeRoute,ROUTES} from './navigation.js?v=006-1';
 const $=id=>document.getElementById(id);
 $('areas').replaceChildren(...AREAS.map(area=>{
   const item=document.createElement('div');item.className='area';
@@ -19,7 +20,7 @@ function renderRoute(){
   }
   $('site-nav').classList.remove('open');
   $('menu-toggle').setAttribute('aria-expanded','false');
-  document.title=({home:'연산런',practice:'연산 훈련',history:'학습 기록'})[route]+' | 연산런';
+  document.title=({home:'연산런',practice:'연산 훈련',history:'학습 기록',auth:'회원가입·로그인'})[route]+' | 연산런';
 }
 window.addEventListener('hashchange',renderRoute);
 document.querySelectorAll('[data-route]').forEach(link=>link.addEventListener('click',()=>queueMicrotask(renderRoute)));
@@ -127,3 +128,60 @@ $('answer-form').addEventListener('submit',event=>{
 });
 $('repeat-five').addEventListener('click',startPractice);
 selectOperation('add');selectDigits(1);renderRoute();
+
+let authMode='login',authBusy=false;
+function setAuthMode(mode){
+ authMode=mode;
+ $('auth-heading').textContent=mode==='login'?'로그인':'회원가입';
+ $('auth-submit').textContent=mode==='login'?'로그인':'회원가입';
+ $('auth-password').autocomplete=mode==='login'?'current-password':'new-password';
+ for(const [id,value] of [['auth-login-tab','login'],['auth-signup-tab','signup']]){
+  const active=value===mode;
+  $(id).classList.toggle('secondary',!active);
+  $(id).setAttribute('aria-pressed',String(active));
+ }
+ $('auth-message').textContent='';
+}
+function displaySession(session){
+ const loggedIn=!!session?.user;
+ $('auth-member').hidden=!loggedIn;
+ $('auth-guest').hidden=loggedIn;
+ $('auth-user-email').textContent=loggedIn?session.user.email||'이메일 확인 중':'';
+ document.querySelector('[data-route="auth"]').textContent=loggedIn?'내 계정':'로그인';
+}
+function authErrorMessage(error){
+ if(error?.message==='Invalid login credentials')return '이메일 또는 비밀번호를 확인해 주세요.';
+ if(error?.message==='Email not confirmed')return '이메일 인증을 완료해 주세요.';
+ if(error?.message==='User already registered')return '이미 가입된 이메일입니다.';
+ return error?.message||'인증 처리 중 오류가 발생했습니다.';
+}
+$('auth-login-tab').addEventListener('click',()=>setAuthMode('login'));
+$('auth-signup-tab').addEventListener('click',()=>setAuthMode('signup'));
+$('auth-form').addEventListener('submit',async event=>{
+ event.preventDefault();if(authBusy)return;
+ const email=$('auth-email').value.trim(),password=$('auth-password').value;
+ const validation=validateCredentials(email,password);
+ if(validation){$('auth-message').textContent=validation;return}
+ authBusy=true;$('auth-submit').disabled=true;$('auth-message').textContent='처리 중입니다.';
+ try{
+  const data=authMode==='login'?await signIn(email,password):await signUp(email,password);
+  displaySession(data.session||null);
+  $('auth-message').textContent=authMode==='signup'&&!data.session?'가입 요청이 접수되었습니다. 이메일 인증이 설정되어 있다면 메일을 확인해 주세요.':'정상 처리되었습니다.';
+  $('auth-password').value='';
+ }catch(error){$('auth-message').textContent=authErrorMessage(error)}
+ finally{authBusy=false;$('auth-submit').disabled=false}
+});
+$('auth-logout').addEventListener('click',async()=>{
+ if(authBusy)return;authBusy=true;$('auth-logout').disabled=true;
+ try{await signOut();displaySession(null);$('auth-message').textContent='로그아웃되었습니다.'}
+ catch(error){$('auth-message').textContent=authErrorMessage(error)}
+ finally{authBusy=false;$('auth-logout').disabled=false}
+});
+setAuthMode('login');
+if(!isAuthConfigured()){
+ $('auth-config-message').textContent='현재 테스트 환경은 Supabase 인증 연결 설정 전입니다. 계정 생성과 로그인은 아직 사용할 수 없습니다.';
+ $('auth-submit').disabled=true;
+}else{
+ currentSession().then(displaySession).catch(error=>{$('auth-message').textContent=authErrorMessage(error)});
+ subscribeAuthChange(displaySession).catch(error=>{$('auth-message').textContent=authErrorMessage(error)});
+}
