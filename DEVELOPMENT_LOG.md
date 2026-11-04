@@ -97,3 +97,9 @@
 - 사용자 실제 화면 테스트 4/4 통과 확인: 비로그인 화면, 학생 학년/코드 발급, 학부모 자녀 목록, 로그아웃 초기화.
 - develop CI 41854056488 성공, staging CI/배포 41854728410 성공 확인.
 - 운영 main 변경 없음, DB 변경 없음. 009 검증 완료.
+
+## 010 회원 정보 수정·탈퇴
+- src/account.js, tests/account.test.mjs 신규. src/main.js, src/auth.js, index.html, tests/navigation-markup.test.mjs 변경.
+- 이메일·비밀번호 수정 폼과 입력 검증 구현. 탈퇴는 안내만 제공하며 실제 삭제 기능 없음.
+- develop CI 41910193966 성공. staging README 트리거 커밋 7b829114b6625d65511b2c8876927341a8493fdc. DB 변경/실제 계정 삭제/운영 main 변경 없음.
+- 상태: 구현 완료·미검증 (스테이징 및 실제 화면 확인 필요).
