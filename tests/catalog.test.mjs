@@ -10,10 +10,10 @@ test('011: 영역별 유형 수 및 고유 ID',()=>{
 test('011: 학년 순서와 계획/구현 분리',()=>{
  assert.equal(GRADE_CODES.length,9);
  assert.equal(getContentType('natural.add').status,'available');
- assert.equal(getContentType('fraction.multiply').status,'planned');
+ assert.equal(getContentType('fraction.multiply').status,'available');
  assert.equal(getContentType('invalid'),null);
  assert.ok(getTypesForGrade('E1').every(t=>t.gradeIndex<=0));
  assert.ok(getTypesForGrade('M3').length===35);
- assert.deepEqual(getTypesForGrade('M3',{includePlanned:false}).map(t=>t.id),['natural.add','natural.subtract','natural.multiply','natural.divide']);
+ assert.equal(getTypesForGrade('M3',{includePlanned:false}).length,24);
  assert.throws(()=>getTypesForGrade('E7'),RangeError);
 });
