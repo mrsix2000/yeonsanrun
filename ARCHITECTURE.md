@@ -88,3 +88,8 @@
 - src/learning-history.js: localStorage key yeonsanrun.practice.v1, 완료 5문제 세션만 저장, 최대 200회, 문제별 typeId/correct/durationMs 및 모드/시각. 개인정보·인증정보 저장 안 함.
 - 분석: 정답률, 문항별 평균 풀이 시간, 취약 유형, 오늘/최근7일/최근30일 완료 횟수, 간단 학습 가이드. 서버 동기화 없음. 동일 브라우저의 모든 이용자에게 기록이 보일 수 있으므로 계정별 기록으로 간주하지 않음.
 - 운영 DB 및 인증 정책 변경 없음. 향후 Supabase 사용자별 기록은 RLS/별도 테스트 DB/운영 승인 후 개발.
+
+## 031~035 화면 구조
+- src/dashboards.js: studentDashboard(records), sessionTrend(records), parentDashboard(links). 학생 화면은 기기 로컬 기록 기반; 학부모 화면은 연결된 자녀의 별칭/수만 제공하며 자녀 성적은 서버 데이터 없이 노출하지 않음.
+- src/main.js: 홈 요약, 학습 기록 추이, 계정 내 학부모 안내 연동. src/styles.css: 모바일 레이아웃/키보드 포커스/동작 줄이기.
+- 서버 자녀 학습 기록/RLS 연결은 미구현이며, 운영 DB 변경 없음.
