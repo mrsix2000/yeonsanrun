@@ -1,8 +1,9 @@
-import {AREAS,TOTAL_TYPES} from './catalog.js?v=006-2';
-import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=006-2';
-import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=006-2';
-import {isAuthConfigured,validateCredentials,signUp,signIn,signOut,currentSession,subscribeAuthChange} from './auth.js?v=006-2';
-import {normalizeRoute,ROUTES} from './navigation.js?v=006-2';
+import {AREAS,TOTAL_TYPES} from './catalog.js?v=007-1';
+import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=007-1';
+import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=007-1';
+import {isAuthConfigured,validateCredentials,signUp,signIn,signOut,currentSession,subscribeAuthChange} from './auth.js?v=007-1';
+import {GRADES,gradeLabel} from './profile.js?v=007-1';
+import {normalizeRoute,ROUTES} from './navigation.js?v=007-1';
 const $=id=>document.getElementById(id);
 $('areas').replaceChildren(...AREAS.map(area=>{
   const item=document.createElement('div');item.className='area';
@@ -145,6 +146,7 @@ function setAuthMode(mode){
 function displaySession(session){
  const loggedIn=!!session?.user;
  $('auth-member').hidden=!loggedIn;
+ $('profile-section').hidden=!loggedIn;
  $('auth-guest').hidden=loggedIn;
  $('auth-user-email').textContent=loggedIn?session.user.email||'이메일 확인 중':'';
  document.querySelector('[data-route="auth"]').textContent=loggedIn?'내 계정':'로그인';
@@ -176,6 +178,11 @@ $('auth-logout').addEventListener('click',async()=>{
  try{await signOut();displaySession(null);$('auth-message').textContent='로그아웃되었습니다.'}
  catch(error){$('auth-message').textContent=authErrorMessage(error)}
  finally{authBusy=false;$('auth-logout').disabled=false}
+});
+$('profile-grade').replaceChildren(...[new Option('학년을 선택해 주세요',''),...GRADES.map(g=>new Option(g.label,g.value))]);
+$('profile-preview').addEventListener('click',()=>{
+ const grade=$('profile-grade').value;
+ $('profile-message').textContent=grade?'학년 미리보기: '+gradeLabel(grade)+' · DB 적용 전이므로 저장되지 않습니다.':'학년을 먼저 선택해 주세요.';
 });
 setAuthMode('login');
 if(!isAuthConfigured()){
