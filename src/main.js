@@ -1,3 +1,4 @@
+import {loadHistory,saveHistory,analyzeHistory} from './learning-history.js?v=010-1';
 import {STUDY_MODES,selectStudyTypes,diagnosticSummary} from './study-modes.js?v=010-1';
 import {availableTypes,createTypedQuestion,gradeTypedAnswer,isValidAnswerInput} from './typed-engine.js?v=010-1';
 import {AREAS,TOTAL_TYPES} from './catalog.js?v=010-1';
@@ -25,6 +26,7 @@ function renderRoute(){
     if(name===route)link.setAttribute('aria-current','page');
     else link.removeAttribute('aria-current');
   }
+  if(route==='history')renderLearningHistory();
   $('site-nav').classList.remove('open');
   $('menu-toggle').setAttribute('aria-expanded','false');
   document.title=({home:'연산런',practice:'연산 훈련',history:'학습 기록',auth:'회원가입·로그인'})[route]+' | 연산런';
@@ -36,6 +38,7 @@ $('menu-toggle').addEventListener('click',()=>{
   const open=$('site-nav').classList.toggle('open');
   $('menu-toggle').setAttribute('aria-expanded',String(open));
 });
+let storedRecords=loadHistory(localStorage);
 let operation='add',digits=1,condition='any',question=null,session=createSession(),locked=false,selectedType='natural.add',questionStartedAt=0,studyMode='free',modeTypes=[],recentAttempts=[];
 const operationButtons=OPERATIONS.map(op=>{
   const button=document.createElement('button');
@@ -108,6 +111,8 @@ function showResult(){
  $('question-panel').hidden=true;$('result-panel').hidden=false;
  $('result-score').textContent=result.correct+' / '+SESSION_SIZE+'문제 정답 · 정답률 '+result.accuracy+'%';
  recentAttempts.push(...session.attempts);
+ try{storedRecords=saveHistory(localStorage,session,studyMode);$('record-status').textContent='이 기기에 학습 기록이 저장되었습니다.';}
+ catch{$('record-status').textContent='기기 저장소를 사용할 수 없어 이번 학습 기록을 저장하지 못했습니다.';}
  $('mode-summary').textContent=studyMode==='diagnostic'?'진단 결과 · 취약 유형: '+(diagnosticSummary(session.attempts).weakTypes.join(', ')||'없음'):'풀이 시간: '+(result.totalDurationMs/1000).toFixed(1)+'초';
  const list=$('mistake-list');list.replaceChildren();
  if(!result.mistakes.length){const item=document.createElement('li');item.textContent='모두 정답입니다!';list.append(item)}
@@ -115,6 +120,18 @@ function showResult(){
   const item=document.createElement('li');
   item.textContent=mistake.text+' 내 답: '+mistake.input+' / 정답: '+mistake.answer;
   list.append(item);
+ }
+}
+function renderLearningHistory(){
+ const data=analyzeHistory(storedRecords);
+ $('history-summary').textContent=data.sessions+'회 훈련 · '+data.total+'문제 · 정답률 '+data.accuracy+'% · 평균 '+data.avgSeconds+'초/문제';
+ $('history-periods').textContent='오늘 '+data.periods.day+'회 · 최근 7일 '+data.periods.week+'회 · 최근 30일 '+data.periods.month+'회';
+ $('history-guidance').textContent=data.guidance;
+ const list=$('history-types');list.replaceChildren();
+ for(const type of data.byType){
+  const li=document.createElement('li');
+  li.textContent=type.typeId+' · '+type.total+'문제 · 정답률 '+type.accuracy+'% · 평균 '+type.avgSeconds+'초';
+  list.append(li);
  }
 }
 function startPractice(){
