@@ -68,3 +68,11 @@
 - Supabase migration success. SQL 확인: public.student_profiles RLS=true, 정책 3개, 초기 행 0개.
 - 코드 단위 테스트: 학년 검증, 사용자 ID 범위 조회/upsert 모의 테스트 추가.
 - CI/staging 배포 결과 및 실제 학년 저장/새로고침/재로그인 검수: 대기. 타 사용자 RLS 실증 접근 차단 테스트: 미실시.
+
+## 007 최종 테스트 결과
+- GitHub staging Actions 41846468979: completed/success.
+- 사용자 브라우저 실제 검수: 5/5 통과(학년 선택·저장·새로고침·재로그인·변경).
+- Supabase 실제 DB RLS=true, SELECT/INSERT/UPDATE 정책 3개. 인증 사용자의 DELETE/TRUNCATE 권한 최초 발견 후 제한 migration 적용.
+- 권한 재확인: authenticated SELECT/INSERT/UPDATE=true, DELETE/TRUNCATE=false, anon SELECT=false.
+- 역할 시뮬레이션 SELECT: 본인 프로필 1건, 다른 사용자 UUID에서 0건. 실제 서로 다른 두 계정 로그인 테스트는 미실시; INSERT/UPDATE 타인 접근은 정책 정적 검사만 완료.
+- 판정: 007 검증 완료(추가 다중 계정 침투 테스트는 047 보안 종합 검증에서 수행).
