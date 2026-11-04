@@ -41,3 +41,9 @@
 - 사용자 승인으로 개발 착수. #auth 화면, 회원가입·로그인·로그아웃, 세션 조회/유지 및 상태 표시, 인증 오류 안내 구현.
 - 추가: src/auth.js, src/supabase-config.js, tests/auth.test.mjs. 수정: index.html, src/main.js, src/navigation.js, src/styles.css, tests/navigation.test.mjs, tests/navigation-markup.test.mjs 및 관리 문서.
 - Supabase 프로젝트 공개 URL/key 미제공으로 실제 계정 연결·이메일 인증은 미검증. DB/운영 main 변경 없음. 상태: 구현 완료·미검증.
+
+## 006 Supabase 연동 및 최종 검수 (2026-11-04)
+- Supabase 공개 설정 연결: src/supabase-config.js, src/auth.js, src/main.js, index.html, 인증·캐시 버전 관련 테스트 변경. secret/service_role 키 미사용.
+- 캐시 버전 불일치 자동 테스트 실패를 수정하여 staging Actions 41841572755 completed/success.
+- 사용자 Supabase 인증 리디렉션 URL 설정 후 이메일 확인, 로그인, 새로고침 후 세션 유지, 로그아웃 검수 통과. 초기 로그인 실패는 비밀번호 오입력으로 확인.
+- DB 스키마/운영 main 변경 없음. 상태: 검증 완료. 007 별도 승인 대기.
