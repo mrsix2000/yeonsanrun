@@ -134,3 +134,8 @@
 - 사용자 021~025 실제 화면 테스트 통과 보고, staging run 41935457375 성공 확인. 검증 완료 갱신.
 - 026~030: src/learning-history.js, tests/learning-history.test.mjs 신규; src/main.js, index.html 변경. 완료된 훈련 세션만 기기에 저장하고 학습 기록 화면에서 통계 표시.
 - 운영 main/운영 DB 변경 없음. 기기 로컬 1차 구현이며 서버 저장·계정 간 동기화 미구현.
+
+## 031~035 대시보드 (2026-11-05)
+- 026~030 이후 사용자가 'ㅇㅋ 다음' 요청. 상세 검수 통과 항목을 명시하지 않아 별도 검증 완료 처리는 보류.
+- src/dashboards.js, tests/dashboards.test.mjs 생성; src/main.js, index.html, src/styles.css 수정.
+- 홈 학생 요약·최근 세션 추이·연결 자녀 수·학부모 기록 미제공 안내·모바일 스타일 추가. 운영 main/DB 변경 없음.
