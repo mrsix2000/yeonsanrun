@@ -15,7 +15,7 @@ test('뺄셈은 음수가 나오지 않고 나눗셈은 항상 나누어떨어�
   const random=()=>vals[i++%2];
   const sub=createQuestion('subtract',random);assert.ok(sub.answer>=0);
   i=0;const div=createQuestion('divide',random);
-  const [left,right]=div.text.split(' ÷ ').map(Number);
+  const [left,right]=div.text.replace(' = ?','').split(' ÷ ').map(Number);
   assert.equal(left/right,div.answer);
  }
 });
