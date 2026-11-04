@@ -83,3 +83,8 @@
 - 사용자 명시 승인 후 Supabase migrations family_links_and_secure_invites_008, family_invite_persist_rate_limit_008, qualify_crypto_functions_008 적용.
 - src/family.js 실제 RPC 및 목록 조회 구현, src/main.js 및 index.html 연결 UI 변경, tests/family.test.mjs 보강.
 - 운영 main 변경 없음. 사용자 실제 부모/학생 계정 연결 검수 대기.
+
+## 008 최종 승인·검증
+- 사용자 실제 화면 4개 모두 통과: 학생 코드 발급, 학부모 연결, 목록 표시, 코드 재사용 거부.
+- Supabase 연결 1건, 미사용 코드 0건. 역할별 SELECT: 부모 1/학생 1/무관 계정 0. 테이블 RLS 및 직접 쓰기 권한 차단 확인.
+- staging Actions 41851544920 completed/success. 운영 main 미변경. 상태 검증 완료.
