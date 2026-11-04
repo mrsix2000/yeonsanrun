@@ -1,11 +1,11 @@
-import {AREAS,TOTAL_TYPES} from './catalog.js?v=008-1';
-import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=008-1';
-import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=008-1';
-import {isAuthConfigured,validateCredentials,signUp,signIn,signOut,currentSession,subscribeAuthChange} from './auth.js?v=008-1';
-import {GRADES,gradeLabel,loadStudentProfile,saveStudentProfile} from './profile.js?v=008-1';
-import {validateChildAlias,describeFamilyState,FAMILY_STATES} from './family.js?v=008-1';
-import {getAuthClient} from './auth.js?v=008-1';
-import {normalizeRoute,ROUTES} from './navigation.js?v=008-1';
+import {AREAS,TOTAL_TYPES} from './catalog.js?v=008-2';
+import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=008-2';
+import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=008-2';
+import {isAuthConfigured,validateCredentials,signUp,signIn,signOut,currentSession,subscribeAuthChange} from './auth.js?v=008-2';
+import {GRADES,gradeLabel,loadStudentProfile,saveStudentProfile} from './profile.js?v=008-2';
+import {validateChildAlias,validateInviteCode,createFamilyInvite,redeemFamilyInvite,loadFamilyLinks} from './family.js?v=008-2';
+import {getAuthClient} from './auth.js?v=008-2';
+import {normalizeRoute,ROUTES} from './navigation.js?v=008-2';
 const $=id=>document.getElementById(id);
 $('areas').replaceChildren(...AREAS.map(area=>{
   const item=document.createElement('div');item.className='area';
@@ -166,7 +166,7 @@ function displaySession(session){
  $('profile-section').hidden=!loggedIn;
  $('family-section').hidden=!loggedIn;
  if(!loggedIn){$('family-alias').value='';$('family-message').textContent='';}
- if((session?.user?.id||null)!==profileUserId)refreshProfile(session);
+ if((session?.user?.id||null)!==profileUserId){refreshProfile(session);if(loggedIn)refreshFamily();}
  $('auth-guest').hidden=loggedIn;
  $('auth-user-email').textContent=loggedIn?session.user.email||'이메일 확인 중':'';
  document.querySelector('[data-route="auth"]').textContent=loggedIn?'내 계정':'로그인';
@@ -213,9 +213,34 @@ $('profile-preview').addEventListener('click',async()=>{
  }catch(error){if(profileUserId===userId)$('profile-message').textContent='저장 실패: '+(error.message||'다시 시도해 주세요.');}
  finally{button.disabled=false;}
 });
-$('family-preview').addEventListener('click',()=>{
- const error=validateChildAlias($('family-alias').value);
- $('family-message').textContent=error||('미리보기: '+$('family-alias').value.trim()+' · '+describeFamilyState(FAMILY_STATES.UNLINKED)+' DB 적용 전이므로 연결은 저장되지 않습니다.');
+let familyBusy=false;
+async function refreshFamily(){
+ if(!profileUserId)return;
+ const userId=profileUserId;
+ try{
+  const links=await loadFamilyLinks(await getAuthClient(),userId);
+  if(profileUserId!==userId)return;
+  const list=$('family-links');list.replaceChildren();
+  for(const link of links){const item=document.createElement('li');item.textContent=link.child_alias+' · 연결됨';list.append(item);}
+  if(!links.length){const item=document.createElement('li');item.textContent='연결된 자녀가 없습니다.';list.append(item);}
+ }catch(error){if(profileUserId===userId)$('family-message').textContent='목록 조회 실패: '+error.message;}
+}
+$('family-generate').addEventListener('click',async()=>{
+ if(familyBusy||!profileUserId)return;
+ familyBusy=true;$('family-generate').disabled=true;
+ try{const code=await createFamilyInvite(await getAuthClient());$('family-message').textContent='학생 연결 코드 (10분 유효): '+code+' · 이 코드를 학부모에게 안전하게 전달하세요.';}
+ catch(error){$('family-message').textContent='코드 발급 실패: '+error.message;}
+ finally{familyBusy=false;$('family-generate').disabled=false;}
+});
+$('family-preview').addEventListener('click',async()=>{
+ if(familyBusy||!profileUserId)return;
+ const alias=$('family-alias').value,code=$('family-code').value.trim();
+ const validation=validateChildAlias(alias)||validateInviteCode(code);
+ if(validation){$('family-message').textContent=validation;return;}
+ familyBusy=true;$('family-preview').disabled=true;
+ try{await redeemFamilyInvite(await getAuthClient(),code,alias);$('family-code').value='';$('family-message').textContent='자녀 연결이 완료되었습니다.';await refreshFamily();}
+ catch(error){$('family-message').textContent='자녀 연결 실패: '+error.message;}
+ finally{familyBusy=false;$('family-preview').disabled=false;}
 });
 setAuthMode('login');
 if(!isAuthConfigured()){
