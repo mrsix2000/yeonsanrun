@@ -114,3 +114,7 @@
 - 사용자 1차 전체 기능 신속 구현 방식 승인. 011부터 단계별 구현 착수.
 - src/catalog.js 35개 유형의 학년·ID·구현상태 정의, tests/catalog.test.mjs 추가.
 - 실제 DB/운영 main 변경 없음. CI 및 사용자 화면 검수 결과 확인 전까지 구현 완료·미검증.
+
+## 012~014 빠른 연속 개발 (2026-11-05)
+- src/curriculum-engine.js 및 tests/curriculum-engine.test.mjs 신규 생성, src/catalog.js 가용 상태 갱신, tests/catalog.test.mjs 회귀 수정.
+- 첫 CI에서 새 모듈의 캐시 버전 누락으로 실패하여 수정. 최종 CI 결과 확인 대기. UI 연결·스테이징 배포 미완료.
