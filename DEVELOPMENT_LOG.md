@@ -9,3 +9,9 @@
 - 변경: index.html, src/main.js, src/engine.js, src/styles.css, tests/operations.test.mjs 및 관리 문서
 - DB 변경 없음, 운영 배포 없음
 - 상태: 구현 완료·미검증. CI 및 사용자 검수 필요.
+
+## 003 최종 검증 (2026-11-04)
+- 기존 회귀 테스트의 고정 자산 버전 단언 수정 후 staging 재배포 성공
+- staging Actions run 41830115160: completed/success
+- 사용자 재검수 5개 항목 모두 정상 확인
+- 상태: 검증 완료. 운영 main/DB 변경 없음.
