@@ -1,15 +1,11 @@
 # ARCHITECTURE
-- 프론트엔드: 정적 HTML/CSS/ES Modules, GitHub Pages 예정
-- src/catalog.js: 8개 영역 메타데이터
-- src/engine.js: 순수 문제 생성 및 채점
-- src/main.js: 화면 이벤트 및 상태
-- 데이터베이스: Supabase 테스트/운영 프로젝트 분리 예정 (아직 미연결)
-- 보안: 서버 비밀키를 브라우저에 넣지 않음. 추후 Auth/RLS 별도 검증
-- 브랜치: main 운영 보존, develop 신규 개발
-- 운영/테스트 배포: 아직 구성되지 않음. 운영 배포는 승인 필요
-
-## 테스트 배포 (2026-11-04)
-- 별도 공개 저장소: mrsix2000/yeonsanrun-staging
-- staging.yml: 5분 간격 또는 수동 실행으로 원본 develop 체크아웃 → npm test → GitHub Pages 배포
-- GitHub Pages의 Source=GitHub Actions 설정은 사용자 확인 필요
-- 스케줄 실행은 GitHub 측 지연 가능. 실시간 push 트리거는 아직 미구현
+- 정적 HTML/CSS/JavaScript, ESM 모듈
+- src/catalog.js: 연산 영역 정의
+- src/engine.js: 문제 생성과 채점
+- src/navigation.js: URL 해시 경로 정규화 (home/practice/history)
+- src/main.js: DOM 렌더링, 해시 라우팅, 체험 훈련 상태
+- src/styles.css: 공통 화면, PC/모바일 반응형 메뉴
+- #home, #practice, #history: 페이지 새로고침과 직접 링크가 가능한 클라이언트 내비게이션
+- 학습 기록 화면은 안내용이며 데이터 저장/DB/Auth 기능 없음
+- develop → staging 전용 GitHub Actions: 주기적 테스트 및 Pages 배포
+- 운영 main 및 운영 사이트 변경 없음. DB 도입 전까지 운영 배포는 사용자 결정에 따라 일괄 진행
