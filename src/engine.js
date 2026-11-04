@@ -30,6 +30,7 @@ export function createQuestion(operation='add',random=Math.random,options={}){
   for(let i=0;i<100;i++){
    a=draw(random,min,max);b=draw(random,min,max);
    if(operation==='subtract'&&a<b)[a,b]=[b,a];
+   if(operation==='subtract'&&a===b)continue;
    const special=operation==='add'?hasCarry(a,b):hasBorrow(a,b);
    if(condition==='any'||special===needs){found=true;break}
   }
@@ -38,16 +39,18 @@ export function createQuestion(operation='add',random=Math.random,options={}){
     add:{1:{with:[8,7],without:[2,3]},2:{with:[58,27],without:[21,32]},3:{with:[158,267],without:[121,232]}},
     subtract:{1:{without:[8,3]},2:{with:[52,18],without:[75,23]},3:{with:[352,178],without:[875,321]}}
    };
-   [a,b]=fallback[operation][digits][condition];
+   if(condition==='any'){
+    [a,b]=operation==='subtract'?[min+1,min]:[min,min];
+   }else [a,b]=fallback[operation][digits][condition];
   }
   left=a;right=b;
   answer=operation==='add'?a+b:a-b;
   symbol=operation==='add'?'+':'−';
  }else if(operation==='multiply'){
-  a=draw(random,min,max);b=draw(random,1,9);
+  a=draw(random,min,max);b=draw(random,2,9);
   left=a;right=b;answer=a*b;symbol='×';
  }else{
-  a=draw(random,min,max);b=draw(random,1,9);
+  a=draw(random,Math.max(2,min),max);b=draw(random,2,9);
   left=a*b;right=b;answer=a;symbol='÷';
  }
  return {id:'natural.'+operation+'.'+digits+'.'+condition,operation,digits,condition,

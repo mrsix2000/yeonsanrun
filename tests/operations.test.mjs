@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {OPERATIONS,createQuestion,gradeAnswer} from '../src/engine.js';
 test('사칙연산 4종 지원',()=>assert.deepEqual(OPERATIONS.map(o=>o.id),['add','subtract','multiply','divide']));
 test('각 연산 최솟값과 최댓값',()=>{
- const expected={add:[2,18],subtract:[0,0],multiply:[1,81],divide:[1,9]};
+ const expected={add:[2,18],subtract:[1,1],multiply:[2,81],divide:[2,9]};
  for(const [op,values] of Object.entries(expected)){
   assert.equal(createQuestion(op,()=>0).answer,values[0]);
   assert.equal(createQuestion(op,()=>0.999).answer,values[1]);
