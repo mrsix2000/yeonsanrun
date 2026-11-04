@@ -9,3 +9,5 @@
 .auth-tabs{display:flex;gap:8px;margin:18px 0}.auth-tabs button{flex:1}#auth-form{display:grid;gap:10px;max-width:420px}#auth-form label{font-weight:650;margin-top:8px}#auth-form input{width:100%;padding:13px;border:1px solid #bac5d8;border-radius:10px;font-size:17px}#auth-form button{margin-top:12px}#auth-message{min-height:24px;line-height:1.6}button:disabled{opacity:.5;cursor:not-allowed}
 
 .profile-section{border-top:1px solid #e5eaf3;margin-top:24px;padding-top:20px}.profile-section label{display:block;font-weight:650;margin:12px 0 8px}.profile-section select{display:block;width:100%;max-width:420px;padding:13px;border:1px solid #bac5d8;border-radius:10px;background:#fff;font:inherit;margin-bottom:12px}#profile-message{line-height:1.6}
+
+#family-alias{display:block;width:100%;max-width:420px;padding:13px;border:1px solid #bac5d8;border-radius:10px;font:inherit;margin:10px 0 14px}#family-message{line-height:1.6}
