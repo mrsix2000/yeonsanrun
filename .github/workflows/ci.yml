@@ -4,14 +4,19 @@ on:
     branches: [develop]
   pull_request:
     branches: [main, develop]
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm test
+      - name: Validate JavaScript syntax
+        run: find src tests -type f \( -name '*.js' -o -name '*.mjs' \) -exec node --check {} \;
+      - name: Run automated tests
+        run: npm test
