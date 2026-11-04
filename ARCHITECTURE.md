@@ -64,3 +64,8 @@
 
 ## 010 검수 상태
 - 사용자 화면 확인 완료(2026-11-05). 계정 삭제 구현은 별도 승인 전 보류. 서버 측 삭제·연관 데이터 정책 미확정.
+
+## 011 콘텐츠 카탈로그
+- src/catalog.js: GRADE_CODES E1~E6/M1~M3, CONTENT_TYPES 35개 고유 ID/areaId/name/grade/gradeIndex/order/level/prerequisites/generator/status.
+- status=available은 기존 자연수 사칙연산 4개뿐, 나머지 31개는 planned. 미구현 유형을 출제 가능하다고 표시하지 않음.
+- getContentType/getTypesForGrade/validateCatalog 공개 API. 기존 AREAS/TOTAL_TYPES 호환 유지. DB 변경 없음.
