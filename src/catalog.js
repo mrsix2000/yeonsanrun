@@ -18,12 +18,13 @@ const specs=[
  ['factoring','전개·인수분해',[
  ['distribution','분배법칙과 전개','M1'],['identities','곱셈 공식','M3'],['common-factor','공통인수 묶기','M3'],['quadratic-factor','이차식 인수분해','M3']]]
 ];
+const EXTENDED_AVAILABLE=new Set(['fraction.concept','fraction.add-same','fraction.subtract-same','fraction.add-different','fraction.multiply','fraction.divide','decimal.add','decimal.subtract','decimal.multiply','decimal.divide','signed.integer-add','signed.integer-subtract','signed.integer-multiply','signed.integer-divide','powers.integer-powers','powers.square-roots','algebra.substitution','algebra.linear-terms','equations.linear','factoring.distribution']);
 export const AREAS=Object.freeze(specs.map(([id,name,types])=>Object.freeze({id,name,count:types.length})));
 export const CONTENT_TYPES=Object.freeze(specs.flatMap(([areaId,,types])=>types.map(([key,name,grade],index)=>Object.freeze({
  id:areaId+'.'+key,areaId,name,grade,gradeIndex:GRADE_CODES.indexOf(grade),
  order:index+1,level:1,prerequisites:Object.freeze([]),
  generator:areaId==='natural'&&['add','subtract','multiply','divide'].includes(key)?'natural.'+key:null,
- status:areaId==='natural'&&['add','subtract','multiply','divide'].includes(key)?'available':'planned'
+ status:(areaId==='natural'&&['add','subtract','multiply','divide'].includes(key))||EXTENDED_AVAILABLE.has(areaId+'.'+key)?'available':'planned'
 }))));
 export const TOTAL_TYPES=CONTENT_TYPES.length;
 export function getContentType(id){return CONTENT_TYPES.find(type=>type.id===id)||null}
