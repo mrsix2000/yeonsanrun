@@ -69,3 +69,7 @@
 - src/catalog.js: GRADE_CODES E1~E6/M1~M3, CONTENT_TYPES 35개 고유 ID/areaId/name/grade/gradeIndex/order/level/prerequisites/generator/status.
 - status=available은 기존 자연수 사칙연산 4개뿐, 나머지 31개는 planned. 미구현 유형을 출제 가능하다고 표시하지 않음.
 - getContentType/getTypesForGrade/validateCatalog 공개 API. 기존 AREAS/TOTAL_TYPES 호환 유지. DB 변경 없음.
+
+## 012~014 콘텐츠 엔진 초안
+- src/curriculum-engine.js: 20개 유형의 순수 문제 생성 createCurriculumQuestion(typeId, random), 채점 gradeCurriculumAnswer(question,raw). 분수 기약분수 동치 허용, 소수·정수 수치 비교. 기존 src/engine.js API 유지.
+- 현재 신규 20개 유형은 UI에 연결되지 않음. catalog.status available은 생성기 존재 의미이며 실제 화면에서 사용 가능하다는 뜻은 아님. 향후 016 통합 시 UI 노출 예정.
