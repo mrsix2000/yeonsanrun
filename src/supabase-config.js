@@ -1,4 +1,3 @@
-// Supabase Dashboard > Project Settings > API의 공개 설정만 입력합니다.
-// service_role 또는 secret 키는 절대 이 파일에 넣지 마세요.
-export const SUPABASE_URL='';
-export const SUPABASE_PUBLISHABLE_KEY='';
+// Supabase 공개 브라우저 설정입니다. service_role/secret 키는 넣지 않습니다.
+export const SUPABASE_URL='https://phydtapmwwonunqgaupx.supabase.co';
+export const SUPABASE_PUBLISHABLE_KEY='sb_publishable_Ncqsvg9MOsvv_7fsuqkTkw_oETWBnEE';
