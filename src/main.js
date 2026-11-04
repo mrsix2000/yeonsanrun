@@ -1,7 +1,7 @@
-import {AREAS,TOTAL_TYPES} from './catalog.js?v=005-2';
-import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=005-2';
-import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=005-2';
-import {normalizeRoute,ROUTES} from './navigation.js?v=005-2';
+import {AREAS,TOTAL_TYPES} from './catalog.js?v=005-fix1';
+import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=005-fix1';
+import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=005-fix1';
+import {normalizeRoute,ROUTES} from './navigation.js?v=005-fix1';
 const $=id=>document.getElementById(id);
 $('areas').replaceChildren(...AREAS.map(area=>{
   const item=document.createElement('div');item.className='area';
@@ -118,7 +118,7 @@ $('history-to-practice').addEventListener('click',()=>{location.hash='practice';
 $('answer-form').addEventListener('submit',event=>{
  event.preventDefault();if(locked||!question||session.complete)return;
  const input=$('answer').value.trim();
- if(!/^-?\\d+$/.test(input)){$('answer').focus();return}
+ if(!/^-?\d+$/.test(input)){$('answer').focus();return}
  locked=true;
  const ok=gradeAnswer(question,input);
  session=recordAttempt(session,question,input,ok);
