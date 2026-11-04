@@ -29,3 +29,9 @@
 - db/008_family_links.sql: parent_user_id/student_user_id 양측 auth.users 참조, 복수 자녀/복수 보호자 확장 가능한 관계 테이블, 자기 자신 연결 방지, 읽기 RLS.
 - 연결 권한: 이메일만으로 연결 금지. 학생 인증 계정에서 단기 일회성 코드를 발급하고 학부모가 제출하면 서버 측 검증 후 연결. 코드 해시·만료·재사용 차단, 취소·동의 정책은 DB 승인 전 상세 확정. 브라우저의 직접 INSERT/UPDATE/DELETE 불허.
 - 008 DB/서버 함수 아직 미적용. 학부모의 학습 데이터 조회 권한은 후속 033~034에서 별도 정책 설계.
+
+## 자동 테스트 구조 보강
+- develop GitHub Actions .github/workflows/ci.yml: Node 22, JavaScript 구문 검사 후 npm test.
+- staging workflow: develop 소스 체크아웃 후 npm test 성공 시에만 GitHub Pages 배포.
+- tests/build-integrity.test.mjs: 로컬 import 경로·캐시 버전, HTML id, 참조 요소, 클라이언트 비밀키 패턴 정적 검사.
+- 실제 브라우저 E2E 및 Supabase 테스트 전용 환경은 아직 미구축. 정적 검사와 실제 브라우저 검증은 구분.
