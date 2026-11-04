@@ -91,3 +91,11 @@
 - Supabase migrations 3개 success. RLS 정책 2개 확인, anon RPC 실행 false, authenticated RPC true, authenticated 직접 INSERT false, invite SELECT false.
 - develop CI run 41851404810 completed/success (단위 및 무결성 테스트 포함). 이전 중간 커밋 CI 실패는 후속 수정으로 해소.
 - 실제 2계정 RPC 연결/코드 만료/시도 제한/브라우저 사용자 검수: 미실행. 상태 구현 완료·미검증.
+
+## 008 최종 검증 (2026-11-04)
+- 사용자 실제 브라우저 검수 4/4 통과.
+- staging Actions 41851544920 completed/success.
+- Supabase: family_links 1건, 미사용 코드 0건, 관계 3개 테이블 RLS 활성.
+- RLS 역할 모의: parent 1건, student 1건, unrelated UUID 0건. anon SELECT/RPC 불허, authenticated 직접 INSERT/UPDATE/DELETE 불허, 초대 코드 테이블 직접 조회 불허.
+- 한계: 10분 실제 시간 경과 만료 및 15분 5회 제한의 시간 기반 통합 시험은 미실행. 보안 종합 검증 047에서 보강.
+- 판정: 008 검증 완료 (요구한 연결 흐름 및 핵심 보안 검증 충족).
