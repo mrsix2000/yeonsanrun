@@ -98,7 +98,7 @@ function renderProgress(){
 }
 function nextQuestion(){
  const nextType=studyMode==='diagnostic'?modeTypes[session.attempts.length]:selectedType;
- question=createTypedQuestion(nextType,Math.random,{digits,condition:nextType.startsWith('natural.')?condition:'any'});
+ question=createTypedQuestion(nextType,Math.random,{digits,condition:studyMode==='free'&&nextType.startsWith('natural.')?condition:'any'});
  questionStartedAt=performance.now();
  locked=false;$('question').textContent=question.text;
  $('answer').value='';$('answer').focus();
