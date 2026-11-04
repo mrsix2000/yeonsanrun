@@ -13,11 +13,10 @@ test('invalid email and short passwords rejected',()=>{
  assert.match(validateCredentials('a@example.com','123'),/8자/);
  assert.equal(validateCredentials('a@example.com','12345678'),'');
 });
-test('unconfigured staging never pretends login works',async()=>{
- assert.equal(isAuthConfigured(),false);
- assert.equal(await currentSession(),null);
- await assert.rejects(getAuthClient(),/설정 전/);
- assert.match(main,/auth-submit'\)\.disabled=true/);
+test('Supabase public auth configuration is present',()=>{
+ assert.equal(isAuthConfigured(),true);
+ assert.match(main,/currentSession\(\)/);
+ assert.match(main,/subscribeAuthChange\(displaySession\)/);
 });
 test('auth uses only public config and no secret key',()=>{
  const config=readFileSync(new URL('../src/supabase-config.js',import.meta.url),'utf8');
