@@ -129,3 +129,8 @@
 - 사용자가 015~020 스테이징 화면 5개 항목 모두 통과 보고. 015~020 검증 완료로 갱신.
 - 021~025: src/study-modes.js, tests/study-modes.test.mjs 신규 생성, src/main.js 및 index.html 변경. 운영 main/DB 변경 없음.
 - 021~025 실제 화면 검수 전까지 구현 완료·미검증.
+
+## 021~025 검수 및 026~030 구현 (2026-11-05)
+- 사용자 021~025 실제 화면 테스트 통과 보고, staging run 41935457375 성공 확인. 검증 완료 갱신.
+- 026~030: src/learning-history.js, tests/learning-history.test.mjs 신규; src/main.js, index.html 변경. 완료된 훈련 세션만 기기에 저장하고 학습 기록 화면에서 통계 표시.
+- 운영 main/운영 DB 변경 없음. 기기 로컬 1차 구현이며 서버 저장·계정 간 동기화 미구현.
