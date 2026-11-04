@@ -93,3 +93,8 @@
 - src/dashboards.js: studentDashboard(records), sessionTrend(records), parentDashboard(links). 학생 화면은 기기 로컬 기록 기반; 학부모 화면은 연결된 자녀의 별칭/수만 제공하며 자녀 성적은 서버 데이터 없이 노출하지 않음.
 - src/main.js: 홈 요약, 학습 기록 추이, 계정 내 학부모 안내 연동. src/styles.css: 모바일 레이아웃/키보드 포커스/동작 줄이기.
 - 서버 자녀 학습 기록/RLS 연결은 미구현이며, 운영 DB 변경 없음.
+
+## 036~040 구독·결제 미리보기
+- src/billing-preview.js: 7일 체험 계산(미리보기), 월/6개월/연간 요금제 가격 null, entitlement false, checkoutEnabled false, 결제·환불 요청은 명시적 예외.
+- #plans 라우트: 가격/결제사/환불 정책 미확정 공지, 비활성화 결제 버튼. Supabase Auth/DB/결제 API 호출 없음.
+- 운영 결제 연동은 서버 검증, 웹훅 서명 검증, RLS, 멱등성, 환불/해지 정책과 별도 승인 후 수행.
