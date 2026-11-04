@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {accountCapabilities,canAccessAccountRoute,sessionIdentity} from '../src/access.js';
+const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+test('guest cannot access account capabilities',()=>{const a=accountCapabilities();assert.deepEqual(Object.values(a),[false,false,false,false,false]);assert.equal(canAccessAccountRoute(null),false);assert.equal(sessionIdentity(null),null);});
+test('student code requires stored grade',()=>{const basic=accountCapabilities({userId:'student'});assert.equal(basic.canIssueStudentCode,false);assert.equal(accountCapabilities({userId:'student',hasStudentProfile:true}).canIssueStudentCode,true);});
+test('parent capability based on linked children, not editable user metadata',()=>{assert.equal(accountCapabilities({userId:'parent',hasLinkedChildren:true}).canViewLinkedChildren,true);assert.equal(accountCapabilities({userId:'parent'}).canViewLinkedChildren,false);});
+test('logout clears private account UI and student role is recalculated',()=>{assert.match(main,/family-code'\)\.value=''/);assert.match(main,/family-links'\)\.replaceChildren\(\)/);assert.match(main,/hasStudentProfile=false;updateAccessUI\(\)/);assert.match(main,/hasLinkedChildren=links\.length>0/);});
+test('capability status is visible and no DB role escalation',()=>{assert.match(html,/id="account-access-status"/);assert.match(html,/id="family-role-message"/);assert.match(main,/accountCapabilities/);assert.doesNotMatch(main,/user_metadata\.(role|is_admin)/);});
