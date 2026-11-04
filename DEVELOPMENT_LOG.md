@@ -88,3 +88,7 @@
 - 사용자 실제 화면 4개 모두 통과: 학생 코드 발급, 학부모 연결, 목록 표시, 코드 재사용 거부.
 - Supabase 연결 1건, 미사용 코드 0건. 역할별 SELECT: 부모 1/학생 1/무관 계정 0. 테이블 RLS 및 직접 쓰기 권한 차단 확인.
 - staging Actions 41851544920 completed/success. 운영 main 미변경. 상태 검증 완료.
+
+## 009 인증 상태·접근 권한 관리
+- src/access.js, tests/access.test.mjs 추가. src/main.js 및 index.html 접근 상태 UI/로그아웃 초기화 변경. src/auth.js 및 내비게이션 테스트 캐시 버전 갱신.
+- develop CI run 41853811611 completed/success. 운영 main/DB 변경 없음. 실제 화면 검수 대기.
