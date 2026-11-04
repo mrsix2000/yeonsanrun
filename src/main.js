@@ -1,3 +1,4 @@
+import {STUDY_MODES,selectStudyTypes,diagnosticSummary} from './study-modes.js?v=010-1';
 import {availableTypes,createTypedQuestion,gradeTypedAnswer,isValidAnswerInput} from './typed-engine.js?v=010-1';
 import {AREAS,TOTAL_TYPES} from './catalog.js?v=010-1';
 import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=010-1';
@@ -35,7 +36,7 @@ $('menu-toggle').addEventListener('click',()=>{
   const open=$('site-nav').classList.toggle('open');
   $('menu-toggle').setAttribute('aria-expanded',String(open));
 });
-let operation='add',digits=1,condition='any',question=null,session=createSession(),locked=false,selectedType='natural.add',questionStartedAt=0;
+let operation='add',digits=1,condition='any',question=null,session=createSession(),locked=false,selectedType='natural.add',questionStartedAt=0,studyMode='free',modeTypes=[],recentAttempts=[];
 const operationButtons=OPERATIONS.map(op=>{
   const button=document.createElement('button');
   button.type='button';button.className='operation-button secondary';button.textContent=op.label;
@@ -96,7 +97,8 @@ function renderProgress(){
  $('progress-track').setAttribute('aria-valuenow',String(completed));
 }
 function nextQuestion(){
- question=createTypedQuestion(selectedType,Math.random,{digits,condition});
+ const nextType=studyMode==='diagnostic'?modeTypes[session.attempts.length]:selectedType;
+ question=createTypedQuestion(nextType,Math.random,{digits,condition:nextType.startsWith('natural.')?condition:'any'});
  questionStartedAt=performance.now();
  locked=false;$('question').textContent=question.text;
  $('answer').value='';$('answer').focus();
@@ -105,6 +107,8 @@ function showResult(){
  const result=summarizeSession(session);
  $('question-panel').hidden=true;$('result-panel').hidden=false;
  $('result-score').textContent=result.correct+' / '+SESSION_SIZE+'문제 정답 · 정답률 '+result.accuracy+'%';
+ recentAttempts.push(...session.attempts);
+ $('mode-summary').textContent=studyMode==='diagnostic'?'진단 결과 · 취약 유형: '+(diagnosticSummary(session.attempts).weakTypes.join(', ')||'없음'):'풀이 시간: '+(result.totalDurationMs/1000).toFixed(1)+'초';
  const list=$('mistake-list');list.replaceChildren();
  if(!result.mistakes.length){const item=document.createElement('li');item.textContent='모두 정답입니다!';list.append(item)}
  else for(const mistake of result.mistakes){
@@ -114,6 +118,13 @@ function showResult(){
  }
 }
 function startPractice(){
+ modeTypes=selectStudyTypes(studyMode,recentAttempts);
+ if(studyMode!=='free'&&studyMode!=='diagnostic'){
+  selectedType=modeTypes[0];
+  $('curriculum-type').value=selectedType;
+  $('natural-controls').hidden=!selectedType.startsWith('natural.');
+  $('selected-operation').textContent=availableTypes().find(t=>t.id===selectedType).name+' 훈련';
+ }
  session=createSession();locked=false;
  $('practice-session').hidden=false;$('begin-practice').hidden=true;
  $('result-panel').hidden=true;$('question-panel').hidden=false;
@@ -147,6 +158,21 @@ typeSelect.addEventListener('change',()=>{
  if(natural){selectOperation(selectedType.slice(8));}
  else{$('selected-operation').textContent=availableTypes().find(type=>type.id===selectedType).name+' 훈련';resetSelection();}
 });
+const studyModeSelect=$('study-mode');
+studyModeSelect.replaceChildren(...STUDY_MODES.map(mode=>new Option(mode.name,mode.id)));
+studyModeSelect.addEventListener('change',()=>{
+ studyMode=studyModeSelect.value;
+ $('curriculum-type').disabled=studyMode!=='free';
+ $('mode-help').textContent=({
+ free:'유형을 직접 선택해 반복 훈련합니다.',
+ diagnostic:'자연수 사칙연산과 분수의 대표 유형을 한 문제씩 풉니다. 간이 진단입니다.',
+ weak:'이 브라우저에서 틀린 비율이 높은 유형을 반복합니다. 기록이 없으면 자연수 덧셈으로 시작합니다.',
+ daily:'오늘 날짜를 기준으로 모든 사용자에게 같은 유형을 제안합니다. 문제 자체는 무작위입니다.',
+ recommended:'이 브라우저의 최근 풀이를 바탕으로 유형을 추천합니다. 기록이 없으면 덧셈부터 시작합니다.'
+ })[studyMode];
+ resetSelection();
+});
+studyModeSelect.dispatchEvent(new Event('change'));
 renderRoute();
 
 let authMode='login',authBusy=false;
