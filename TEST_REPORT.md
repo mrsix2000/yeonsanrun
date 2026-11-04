@@ -63,3 +63,8 @@
 - 학년 9개 코드/검증, 로그인 후 미리보기 마크업, DB 미적용 시 저장 호출 금지, SQL RLS 소유권/제약 정적 테스트 추가.
 - 실제 DB/RLS 권한 테스트: SQL 미적용으로 미실시. 사용자 브라우저 검수: 대기. 운영 main 변경 없음.
 - staging CI 결과는 별도 확인 필요. 상태: 구현 완료·미검증.
+
+## 007 DB 적용 후 검증
+- Supabase migration success. SQL 확인: public.student_profiles RLS=true, 정책 3개, 초기 행 0개.
+- 코드 단위 테스트: 학년 검증, 사용자 ID 범위 조회/upsert 모의 테스트 추가.
+- CI/staging 배포 결과 및 실제 학년 저장/새로고침/재로그인 검수: 대기. 타 사용자 RLS 실증 접근 차단 테스트: 미실시.
