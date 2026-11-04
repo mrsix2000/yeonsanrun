@@ -99,3 +99,8 @@
 - RLS 역할 모의: parent 1건, student 1건, unrelated UUID 0건. anon SELECT/RPC 불허, authenticated 직접 INSERT/UPDATE/DELETE 불허, 초대 코드 테이블 직접 조회 불허.
 - 한계: 10분 실제 시간 경과 만료 및 15분 5회 제한의 시간 기반 통합 시험은 미실행. 보안 종합 검증 047에서 보강.
 - 판정: 008 검증 완료 (요구한 연결 흐름 및 핵심 보안 검증 충족).
+
+## 009 자동 테스트
+- develop CI run 41853811611 completed/success: 권한 계산, 학년 저장 전 발급 제한, 로그아웃 정보 초기화, 기존 테스트 회귀 포함.
+- staging CI 및 실제 브라우저 테스트: 대기. 실제 Supabase RLS는 008 검증을 유지하며 009 DB 변경 없음.
+- 판정: 구현 완료·미검증.
