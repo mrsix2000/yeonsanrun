@@ -21,3 +21,5 @@
 - 007 초안: src/profile.js는 E1~E6/M1~M3 학년 코드 및 표시명을 제공. 로그인 후 #auth에서 학년 선택 미리보기(저장하지 않음). db/007_student_profiles.sql은 user_id=auth.users.id PK, grade_code CHECK, 본인 소유 RLS 정책을 제안. 실제 DB 변경은 별도 승인 대기. 학부모-자녀 관계는 후속 설계.
 
 - 007 DB 승인 적용: public.student_profiles 생성, RLS 활성화, 본인 소유 select/insert/update 3개 정책. src/profile.js의 loadStudentProfile/saveStudentProfile이 사용자 ID로 조회·upsert. 인증 변경 시 로그인 계정별 조회, 로그아웃 시 선택 초기화. 실제 교차 사용자 권한 실증 테스트는 별도 진행 필요.
+
+- 007 보안 최종 조정: public/anon/authenticated 기본 테이블 권한 전부 회수 후 authenticated SELECT/INSERT/UPDATE만 재부여. RLS 3개 정책으로 auth.uid()=user_id 강제. 별도 학부모 접근은 아직 허용하지 않음.
