@@ -17,6 +17,6 @@ test('메뉴 화면 전환 이벤트와 해시 변경 양쪽 처리',()=>{
 });
 test('숨김 스타일과 캐시 버전 고정',()=>{
  assert.match(css,/\[hidden\]\{display:none!important\}/);
- assert.match(html,/styles\.css\?v=006-2/);
- assert.match(html,/main\.js\?v=006-2/);
+ assert.match(html,/styles\.css\?v=007-1/);
+ assert.match(html,/main\.js\?v=007-1/);
 });
