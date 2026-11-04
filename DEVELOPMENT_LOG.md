@@ -78,3 +78,8 @@
 - 추가: tests/build-integrity.test.mjs, .github/workflows/ci.yml 구문 검사 단계.
 - GitHub Actions develop run 41849056652 completed/success.
 - 운영 main/실제 DB 변경 없음. 008 상태 유지.
+
+## 008 DB 승인 후 구현
+- 사용자 명시 승인 후 Supabase migrations family_links_and_secure_invites_008, family_invite_persist_rate_limit_008, qualify_crypto_functions_008 적용.
+- src/family.js 실제 RPC 및 목록 조회 구현, src/main.js 및 index.html 연결 UI 변경, tests/family.test.mjs 보강.
+- 운영 main 변경 없음. 사용자 실제 부모/학생 계정 연결 검수 대기.
