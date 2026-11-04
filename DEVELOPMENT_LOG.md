@@ -65,3 +65,10 @@
 - DB 권한 점검에서 authenticated DELETE/TRUNCATE 권한 발견. 승인된 007 보안 범위 내 restrict_student_profiles_privileges_007 migration 적용, 권한 회수 후 SELECT/INSERT/UPDATE만 허용 확인.
 - RLS 조회 실증: 실제 사용자 본인 1건 조회, 다른 사용자 UUID 역할 조회 0건. 운영 main 변경 없음.
 - 상태: 검증 완료. 008은 별도 승인 대기.
+
+## 008 학부모 계정·자녀 연결
+- 사용자 승인 범위: 설계·staging 구현만. 실제 DB 변경 전 별도 승인.
+- 추가: src/family.js, db/008_family_links.sql(미적용), tests/family.test.mjs.
+- 변경: index.html, src/main.js, src/auth.js, src/styles.css, tests/navigation-markup.test.mjs.
+- 학부모 자녀 연결 상태 미리보기 구현. 연결 코드/서버 검증/DB 쓰기는 아직 없음. 운영 main 변경 없음.
+- 상태: 구현 완료·미검증.
