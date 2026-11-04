@@ -1,4 +1,4 @@
--- 007 설계 초안: 승인 전 실행 금지. Supabase SQL Editor에서 승인 후 적용.
+-- 007 적용 이력: create_student_profiles_007 및 restrict_student_profiles_privileges_007 승인 후 실행 완료.
 -- 인증 사용자당 학생 프로필 하나. 향후 학부모-자녀 다대다 관계는 별도 테이블로 확장.
 create table if not exists public.student_profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
@@ -7,7 +7,7 @@ create table if not exists public.student_profiles (
   updated_at timestamptz not null default now()
 );
 alter table public.student_profiles enable row level security;
-revoke all on public.student_profiles from anon;
+revoke all on public.student_profiles from public, anon, authenticated;
 grant select, insert, update on public.student_profiles to authenticated;
 create policy "student_profiles_select_own" on public.student_profiles
   for select to authenticated using ((select auth.uid()) = user_id);
