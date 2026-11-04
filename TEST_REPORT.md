@@ -11,3 +11,10 @@
 - 실제 GitHub Actions 실행 성공 여부: 미검증
 - GitHub Pages URL 활성화: 미검증
 - 사용자 브라우저 테스트: 미실시
+
+## GitHub Actions 검증 결과 (2026-11-04)
+- 테스트 저장소 workflow run #2 (41827045024): completed/success
+- verify job: success, Run automated tests 단계: success
+- deploy job: success, Deploy Pages 단계: success
+- 배포 URL: https://mrsix2000.github.io/yeonsanrun-staging/
+- 실제 사용자 브라우저 및 모바일 검증: 대기
