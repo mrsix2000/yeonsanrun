@@ -26,3 +26,8 @@
 - 기존 상태/오류 안내 UI를 제거하고 5문제 연속 풀이, 진행 바, 제출 즉시 다음 문제, 결과·오답, 다시 5문제 기능으로 대체.
 - 변경: index.html, src/main.js, src/styles.css, tests/navigation-markup.test.mjs, tests/session-ui.test.mjs. 추가: src/session.js, tests/session-flow.test.mjs.
 - 상태: 구현 완료·미검증. DB/운영 main 변경 없음.
+
+## 005 변경 (2026-11-04)
+- 사용자 요청으로 상태 표시·오류 UI를 5문제 연속 풀이, 진행 바, 제출 즉시 다음 문제, 결과 및 오답 목록으로 교체.
+- src/session.js, tests/session-flow.test.mjs 추가. src/main.js, index.html, src/styles.css, tests/session-ui.test.mjs, tests/navigation-markup.test.mjs 수정.
+- 상태: 구현 완료·미검증. DB/운영 main 변경 없음.
