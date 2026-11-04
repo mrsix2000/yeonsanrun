@@ -23,3 +23,9 @@
 - 007 DB 승인 적용: public.student_profiles 생성, RLS 활성화, 본인 소유 select/insert/update 3개 정책. src/profile.js의 loadStudentProfile/saveStudentProfile이 사용자 ID로 조회·upsert. 인증 변경 시 로그인 계정별 조회, 로그아웃 시 선택 초기화. 실제 교차 사용자 권한 실증 테스트는 별도 진행 필요.
 
 - 007 보안 최종 조정: public/anon/authenticated 기본 테이블 권한 전부 회수 후 authenticated SELECT/INSERT/UPDATE만 재부여. RLS 3개 정책으로 auth.uid()=user_id 강제. 별도 학부모 접근은 아직 허용하지 않음.
+
+## 008 학부모·자녀 연결 설계 (미적용)
+- src/family.js: 연결 상태 및 자녀 표시명 검증. 로그인 계정에만 보이는 미리보기 UI.
+- db/008_family_links.sql: parent_user_id/student_user_id 양측 auth.users 참조, 복수 자녀/복수 보호자 확장 가능한 관계 테이블, 자기 자신 연결 방지, 읽기 RLS.
+- 연결 권한: 이메일만으로 연결 금지. 학생 인증 계정에서 단기 일회성 코드를 발급하고 학부모가 제출하면 서버 측 검증 후 연결. 코드 해시·만료·재사용 차단, 취소·동의 정책은 DB 승인 전 상세 확정. 브라우저의 직접 INSERT/UPDATE/DELETE 불허.
+- 008 DB/서버 함수 아직 미적용. 학부모의 학습 데이터 조회 권한은 후속 033~034에서 별도 정책 설계.
