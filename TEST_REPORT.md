@@ -76,3 +76,8 @@
 - 권한 재확인: authenticated SELECT/INSERT/UPDATE=true, DELETE/TRUNCATE=false, anon SELECT=false.
 - 역할 시뮬레이션 SELECT: 본인 프로필 1건, 다른 사용자 UUID에서 0건. 실제 서로 다른 두 계정 로그인 테스트는 미실시; INSERT/UPDATE 타인 접근은 정책 정적 검사만 완료.
 - 판정: 007 검증 완료(추가 다중 계정 침투 테스트는 047 보안 종합 검증에서 수행).
+
+## 008 사전 검증
+- 단위 테스트: 연결 상태, 자녀 별칭 길이, 미리보기 DB 비연결, SQL RLS·직접 쓰기 금지.
+- DB/실제 부모·자녀 연결/RLS 실증 테스트: DB 승인 전이므로 미실시.
+- CI 및 사용자 화면 검수: 대기. 상태: 구현 완료·미검증.
