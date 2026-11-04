@@ -139,3 +139,7 @@
 - 026~030 이후 사용자가 'ㅇㅋ 다음' 요청. 상세 검수 통과 항목을 명시하지 않아 별도 검증 완료 처리는 보류.
 - src/dashboards.js, tests/dashboards.test.mjs 생성; src/main.js, index.html, src/styles.css 수정.
 - 홈 학생 요약·최근 세션 추이·연결 자녀 수·학부모 기록 미제공 안내·모바일 스타일 추가. 운영 main/DB 변경 없음.
+
+## 031~035 검수 및 036~040 미리보기 (2026-11-05)
+- 사용자 '통과 다음'으로 031~035 스테이징 검수 승인. 036~040 src/billing-preview.js, tests/billing-preview.test.mjs 생성, index.html, src/main.js, src/navigation.js 및 관련 테스트 수정.
+- 가격·결제사 미선정으로 실제 결제, 체험 권한 부여, 구독 상태 저장은 구현하지 않음. 운영 DB/사이트 변경 없음.
