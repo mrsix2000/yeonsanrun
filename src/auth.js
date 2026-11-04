@@ -1,4 +1,4 @@
-import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from './supabase-config.js?v=008-2';
+import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from './supabase-config.js?v=009-1';
 export const isAuthConfigured=()=>/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(SUPABASE_URL)&&!!SUPABASE_PUBLISHABLE_KEY;
 let clientPromise;
 export async function getAuthClient(){
