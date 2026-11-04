@@ -54,3 +54,8 @@
 - 변경: index.html, src/main.js, src/auth.js, src/styles.css, tests/navigation-markup.test.mjs.
 - 로그인 후 학년 9개 선택·미리보기 구현. 저장 기능은 DB 미적용으로 비활성; 사용자에게 미저장 상태 명시.
 - 운영 main/실제 DB 변경 없음. 상태: 구현 완료·미검증.
+
+## 007 DB 적용 및 저장 구현
+- 사용자 별도 DB 적용 승인 후 Supabase migration create_student_profiles_007 성공.
+- RLS 활성화/정책 3개 확인, 기존 행 0개. src/profile.js 저장·불러오기 구현, src/main.js·index.html·src/auth.js·tests 수정, 버전 007-2.
+- 운영 main 변경 없음. staging CI 및 사용자 실기기 검수 대기. 상태: 구현 완료·미검증.
