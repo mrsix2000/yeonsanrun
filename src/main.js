@@ -1,12 +1,13 @@
-import {AREAS,TOTAL_TYPES} from './catalog.js?v=009-1';
-import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=009-1';
-import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=009-1';
-import {isAuthConfigured,validateCredentials,signUp,signIn,signOut,currentSession,subscribeAuthChange} from './auth.js?v=009-1';
-import {GRADES,gradeLabel,loadStudentProfile,saveStudentProfile} from './profile.js?v=009-1';
-import {validateChildAlias,validateInviteCode,createFamilyInvite,redeemFamilyInvite,loadFamilyLinks} from './family.js?v=009-1';
-import {getAuthClient} from './auth.js?v=009-1';
-import {accountCapabilities,sessionIdentity} from './access.js?v=009-1';
-import {normalizeRoute,ROUTES} from './navigation.js?v=009-1';
+import {AREAS,TOTAL_TYPES} from './catalog.js?v=010-1';
+import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=010-1';
+import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=010-1';
+import {isAuthConfigured,validateCredentials,signUp,signIn,signOut,currentSession,subscribeAuthChange} from './auth.js?v=010-1';
+import {GRADES,gradeLabel,loadStudentProfile,saveStudentProfile} from './profile.js?v=010-1';
+import {validateChildAlias,validateInviteCode,createFamilyInvite,redeemFamilyInvite,loadFamilyLinks} from './family.js?v=010-1';
+import {getAuthClient} from './auth.js?v=010-1';
+import {accountCapabilities,sessionIdentity} from './access.js?v=010-1';
+import {normalizeRoute,ROUTES} from './navigation.js?v=010-1';
+import {changeAccountEmail,changeAccountPassword,ACCOUNT_DELETION_STATUS} from './account.js?v=010-1';
 const $=id=>document.getElementById(id);
 $('areas').replaceChildren(...AREAS.map(area=>{
   const item=document.createElement('div');item.className='area';
@@ -175,6 +176,10 @@ function displaySession(session){
  $('auth-member').hidden=!loggedIn;
  $('profile-section').hidden=!loggedIn;
  $('family-section').hidden=!loggedIn;
+ $('account-settings').hidden=!loggedIn;
+ if(!loggedIn){$('account-email').value='';$('account-new-password').value='';$('account-confirm-password').value='';$('account-settings-message').textContent='';}
+ else if($('account-email').dataset.userId!==session.user.id){$('account-email').value=session.user.email||'';$('account-email').dataset.userId=session.user.id;}
+ if(!loggedIn)$('account-email').dataset.userId='';
  if(!loggedIn){$('family-alias').value='';$('family-code').value='';$('family-message').textContent='';$('family-links').replaceChildren();hasLinkedChildren=false;hasStudentProfile=false;updateAccessUI();}
  if((session?.user?.id||null)!==profileUserId){refreshProfile(session);if(loggedIn)refreshFamily();}
  $('auth-guest').hidden=loggedIn;
@@ -208,6 +213,28 @@ $('auth-logout').addEventListener('click',async()=>{
  try{await signOut();displaySession(null);$('auth-message').textContent='로그아웃되었습니다.'}
  catch(error){$('auth-message').textContent=authErrorMessage(error)}
  finally{authBusy=false;$('auth-logout').disabled=false}
+});
+$('account-deletion-status').textContent=ACCOUNT_DELETION_STATUS;
+let accountBusy=false;
+$('account-email-form').addEventListener('submit',async event=>{
+ event.preventDefault();if(accountBusy||!profileUserId)return;
+ const userId=profileUserId,email=$('account-email').value.trim(),button=$('account-email-submit');
+ accountBusy=true;button.disabled=true;$('account-settings-message').textContent='이메일 변경 요청 중입니다.';
+ try{
+  await changeAccountEmail(await getAuthClient(),email);
+  if(profileUserId===userId)$('account-settings-message').textContent='이메일 변경 요청을 접수했습니다. 이메일 확인 안내가 도착하면 인증해 주세요.';
+ }catch(error){if(profileUserId===userId)$('account-settings-message').textContent='이메일 변경 실패: '+(error.message||'다시 시도해 주세요.');}
+ finally{accountBusy=false;button.disabled=false;}
+});
+$('account-password-form').addEventListener('submit',async event=>{
+ event.preventDefault();if(accountBusy||!profileUserId)return;
+ const userId=profileUserId,password=$('account-new-password').value,confirm=$('account-confirm-password').value,button=$('account-password-submit');
+ accountBusy=true;button.disabled=true;$('account-settings-message').textContent='비밀번호 변경 중입니다.';
+ try{
+  await changeAccountPassword(await getAuthClient(),password,confirm);
+  if(profileUserId===userId)$('account-settings-message').textContent='비밀번호 변경이 완료되었습니다.';
+ }catch(error){if(profileUserId===userId)$('account-settings-message').textContent='비밀번호 변경 실패: '+(error.message||'다시 시도해 주세요.');}
+ finally{$('account-new-password').value='';$('account-confirm-password').value='';accountBusy=false;button.disabled=false;}
 });
 $('profile-grade').replaceChildren(...[new Option('학년을 선택해 주세요',''),...GRADES.map(g=>new Option(g.label,g.value))]);
 $('profile-preview').addEventListener('click',async()=>{
