@@ -1,6 +1,6 @@
-import {AREAS,TOTAL_TYPES} from './catalog.js?v=004-fix2';
-import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=004-fix2';
-import {normalizeRoute,ROUTES} from './navigation.js?v=004-fix2';
+import {AREAS,TOTAL_TYPES} from './catalog.js?v=005-1';
+import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=005-1';
+import {normalizeRoute,ROUTES} from './navigation.js?v=005-1';
 const $=id=>document.getElementById(id);
 $('areas').replaceChildren(...AREAS.map(area=>{
   const item=document.createElement('div');item.className='area';
@@ -51,7 +51,12 @@ function resetSelection(){
   $('practice-session').hidden=true;
   $('begin-practice').hidden=false;
   question=null;answered=0;correct=0;locked=false;
+  $('session-status').textContent='대기 중';
+  $('input-error').textContent='';
+  $('feedback').textContent='';
+  $('answer').value='';
 }
+
 const digitButtons=DIGITS.map(value=>{
  const button=document.createElement('button');button.type='button';button.className='digit-button secondary';
  button.textContent=value+'자리';button.dataset.digits=String(value);
@@ -80,13 +85,23 @@ for(const button of document.querySelectorAll('[data-condition]')){
 }
 
 function nextQuestion(){
-  question=createQuestion(operation,Math.random,{digits,condition});locked=false;
+  try{question=createQuestion(operation,Math.random,{digits,condition})}
+  catch(error){
+    $('session-status').textContent='문제 생성 오류';
+    $('input-error').textContent='문제를 만들지 못했습니다. 다시 시작해 주세요.';
+    $('answer-form').hidden=true;$('next').hidden=true;
+    $('retry-practice').hidden=false;
+    return;
+  }
+  $('retry-practice').hidden=true;
+  $('session-status').textContent='풀이 중';locked=false;
   $('question').textContent=question.text;
-  $('answer').value='';$('feedback').textContent='';
+  $('answer').value='';$('feedback').textContent='';$('input-error').textContent='';
   $('answer-form').hidden=false;$('next').hidden=true;$('answer').focus();
 }
 function startPractice(){
   answered=0;correct=0;
+  $('input-error').textContent='';
   $('practice-session').hidden=false;$('begin-practice').hidden=true;
   $('score').textContent=`현재 점수: 0/0 · 전체 ${TOTAL_TYPES}개 유형 중 자연수 ${digits}자리 ${OPERATIONS.find(op=>op.id===operation).label} 체험`;
   nextQuestion();
@@ -97,11 +112,21 @@ $('start').addEventListener('click',()=>{
 $('begin-practice').addEventListener('click',startPractice);
 $('history-to-practice').addEventListener('click',()=>{location.hash='practice';renderRoute()});
 $('answer-form').addEventListener('submit',event=>{
-  event.preventDefault();if(locked)return;locked=true;
-  const ok=gradeAnswer(question,$('answer').value);answered++;if(ok)correct++;
+  event.preventDefault();if(locked||!question)return;
+  const input=$('answer').value.trim();
+  if(!/^-?\d+$/.test(input)){
+    $('input-error').textContent='정수를 입력해 주세요.';
+    $('answer').focus();return;
+  }
+  $('input-error').textContent='';locked=true;
+  const ok=gradeAnswer(question,input);answered++;if(ok)correct++;
   $('feedback').textContent=ok?'정답입니다!':`정답은 ${question.answer}입니다.`;
+  $('session-status').textContent='채점 완료';
   $('score').textContent=`현재 점수: ${correct}/${answered}`;
   $('answer-form').hidden=true;$('next').hidden=false;
 });
 $('next').addEventListener('click',nextQuestion);
+$('restart-practice').addEventListener('click',startPractice);
+$('retry-practice').addEventListener('click',startPractice);
+$('answer').addEventListener('input',()=>{$('input-error').textContent=''});
 selectOperation('add');selectDigits(1);renderRoute();

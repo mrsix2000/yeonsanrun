@@ -14,3 +14,10 @@
 - 사용자 상세 검수 통과 보고 후 문제 생성 제한 추가: +0, ×1, 뺄셈 결과 0, 나눗셈 몫 1 제외.
 - src/engine.js, tests/operations.test.mjs 수정 및 tests/nontrivial.test.mjs 추가.
 - 상태: 구현 완료·추가 조건 검증 대기. 운영 배포/DB 변경 없음.
+
+## 004 최종 검증
+- 사용자 추가 조건 최종 확인. staging Actions 41833358655 completed/success. 상태: 검증 완료.
+## 005 공통 UI·상태 관리 및 오류 처리 (2026-11-04)
+- 사용자 다음 단계 진행 승인. 훈련 상태 메시지, 정수 입력 오류, 문제 생성 실패 메시지 및 재시도, 세션 처음부터 다시 시작, 모바일 답안 입력 UI.
+- 변경: index.html, src/main.js, src/styles.css, tests/navigation-markup.test.mjs, tests/session-ui.test.mjs 및 관리 문서.
+- DB/운영 main 변경 없음. 상태: 구현 완료·미검증.
