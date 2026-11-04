@@ -1,10 +1,11 @@
-import {AREAS,TOTAL_TYPES} from './catalog.js?v=007-2';
-import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=007-2';
-import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=007-2';
-import {isAuthConfigured,validateCredentials,signUp,signIn,signOut,currentSession,subscribeAuthChange} from './auth.js?v=007-2';
-import {GRADES,gradeLabel,loadStudentProfile,saveStudentProfile} from './profile.js?v=007-2';
-import {getAuthClient} from './auth.js?v=007-2';
-import {normalizeRoute,ROUTES} from './navigation.js?v=007-2';
+import {AREAS,TOTAL_TYPES} from './catalog.js?v=008-1';
+import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=008-1';
+import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=008-1';
+import {isAuthConfigured,validateCredentials,signUp,signIn,signOut,currentSession,subscribeAuthChange} from './auth.js?v=008-1';
+import {GRADES,gradeLabel,loadStudentProfile,saveStudentProfile} from './profile.js?v=008-1';
+import {validateChildAlias,describeFamilyState,FAMILY_STATES} from './family.js?v=008-1';
+import {getAuthClient} from './auth.js?v=008-1';
+import {normalizeRoute,ROUTES} from './navigation.js?v=008-1';
 const $=id=>document.getElementById(id);
 $('areas').replaceChildren(...AREAS.map(area=>{
   const item=document.createElement('div');item.className='area';
@@ -163,6 +164,8 @@ function displaySession(session){
  const loggedIn=!!session?.user;
  $('auth-member').hidden=!loggedIn;
  $('profile-section').hidden=!loggedIn;
+ $('family-section').hidden=!loggedIn;
+ if(!loggedIn){$('family-alias').value='';$('family-message').textContent='';}
  if((session?.user?.id||null)!==profileUserId)refreshProfile(session);
  $('auth-guest').hidden=loggedIn;
  $('auth-user-email').textContent=loggedIn?session.user.email||'이메일 확인 중':'';
@@ -209,6 +212,10 @@ $('profile-preview').addEventListener('click',async()=>{
   if(profileUserId===userId)$('profile-message').textContent='저장 완료: '+gradeLabel(saved);
  }catch(error){if(profileUserId===userId)$('profile-message').textContent='저장 실패: '+(error.message||'다시 시도해 주세요.');}
  finally{button.disabled=false;}
+});
+$('family-preview').addEventListener('click',()=>{
+ const error=validateChildAlias($('family-alias').value);
+ $('family-message').textContent=error||('미리보기: '+$('family-alias').value.trim()+' · '+describeFamilyState(FAMILY_STATES.UNLINKED)+' DB 적용 전이므로 연결은 저장되지 않습니다.');
 });
 setAuthMode('login');
 if(!isAuthConfigured()){
