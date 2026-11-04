@@ -7,3 +7,9 @@
 - 변경: index.html, src/main.js, src/navigation.js, src/styles.css, tests/navigation.test.mjs 및 관리 문서
 - DB 변경: 없음. 운영 배포: 없음.
 - 상태: 구현 완료·미검증. CI 및 사용자 화면 확인 대기.
+
+## 002 오류 수정 (2026-11-04)
+- 사용자 보고: 메뉴 URL만 바뀌고 화면 전환되지 않음
+- 메뉴 클릭 즉시 라우트 렌더링 보강 및 CSS/JS 캐시 버전 갱신
+- 화면 요소/내비게이션 연결 테스트 추가
+- DB 및 운영 배포 변경 없음. 사용자 재검증 대기

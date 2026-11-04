@@ -25,6 +25,15 @@ function renderRoute(){
   document.title=({home:'연산런',practice:'연산 훈련',history:'학습 기록'})[route]+' | 연산런';
 }
 window.addEventListener('hashchange',renderRoute);
+document.querySelectorAll('[data-route]').forEach(link=>{
+  link.addEventListener('click',()=>{
+    const route=link.dataset.route;
+    if(normalizeRoute('#'+route)!==route)return;
+    // 즉시 화면 전환. hashchange 이벤트는 뒤따르는 동기화 경로로 유지.
+    queueMicrotask(renderRoute);
+  });
+});
+document.querySelector('.brand').addEventListener('click',()=>queueMicrotask(renderRoute));
 $('menu-toggle').addEventListener('click',()=>{
   const open=$('site-nav').classList.toggle('open');
   $('menu-toggle').setAttribute('aria-expanded',String(open));
