@@ -1,3 +1,4 @@
+import {availableTypes,createTypedQuestion,gradeTypedAnswer,isValidAnswerInput} from './typed-engine.js?v=010-1';
 import {AREAS,TOTAL_TYPES} from './catalog.js?v=010-1';
 import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=010-1';
 import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=010-1';
@@ -34,7 +35,7 @@ $('menu-toggle').addEventListener('click',()=>{
   const open=$('site-nav').classList.toggle('open');
   $('menu-toggle').setAttribute('aria-expanded',String(open));
 });
-let operation='add',digits=1,condition='any',question=null,session=createSession(),locked=false;
+let operation='add',digits=1,condition='any',question=null,session=createSession(),locked=false,selectedType='natural.add',questionStartedAt=0;
 const operationButtons=OPERATIONS.map(op=>{
   const button=document.createElement('button');
   button.type='button';button.className='operation-button secondary';button.textContent=op.label;
@@ -44,7 +45,8 @@ const operationButtons=OPERATIONS.map(op=>{
 });
 $('operation-options').replaceChildren(...operationButtons);
 function selectOperation(id){
-  operation=id;
+  operation=id;selectedType='natural.'+id;
+  if($('curriculum-type'))$('curriculum-type').value=selectedType;
   for(const button of operationButtons){
     const active=button.dataset.operation===id;
     button.classList.toggle('selected',active);
@@ -94,7 +96,8 @@ function renderProgress(){
  $('progress-track').setAttribute('aria-valuenow',String(completed));
 }
 function nextQuestion(){
- question=createQuestion(operation,Math.random,{digits,condition});
+ question=createTypedQuestion(selectedType,Math.random,{digits,condition});
+ questionStartedAt=performance.now();
  locked=false;$('question').textContent=question.text;
  $('answer').value='';$('answer').focus();
 }
@@ -126,13 +129,25 @@ $('answer-form').addEventListener('submit',event=>{
  const input=$('answer').value.trim();
  if(!/^-?\d+$/.test(input)){$('answer').focus();return}
  locked=true;
- const ok=gradeAnswer(question,input);
- session=recordAttempt(session,question,input,ok);
+ const ok=gradeTypedAnswer(question,input);
+ const durationMs=Math.max(0,Math.round(performance.now()-questionStartedAt));
+ session=recordAttempt(session,{...question,durationMs},input,ok);
  renderProgress();
  if(session.complete)showResult();else nextQuestion();
 });
 $('repeat-five').addEventListener('click',startPractice);
-selectOperation('add');selectDigits(1);renderRoute();
+selectOperation('add');selectDigits(1);
+const typeSelect=$('curriculum-type');
+typeSelect.replaceChildren(...availableTypes().map(type=>new Option(type.name+' ('+type.grade+')',type.id)));
+typeSelect.value=selectedType;
+typeSelect.addEventListener('change',()=>{
+ selectedType=typeSelect.value;
+ const natural=selectedType.startsWith('natural.');
+ $('natural-controls').hidden=!natural;
+ if(natural){selectOperation(selectedType.slice(8));}
+ else{$('selected-operation').textContent=availableTypes().find(type=>type.id===selectedType).name+' 훈련';resetSelection();}
+});
+renderRoute();
 
 let authMode='login',authBusy=false;
 function setAuthMode(mode){
