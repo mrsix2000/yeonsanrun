@@ -47,3 +47,10 @@
 - 캐시 버전 불일치 자동 테스트 실패를 수정하여 staging Actions 41841572755 completed/success.
 - 사용자 Supabase 인증 리디렉션 URL 설정 후 이메일 확인, 로그인, 새로고침 후 세션 유지, 로그아웃 검수 통과. 초기 로그인 실패는 비밀번호 오입력으로 확인.
 - DB 스키마/운영 main 변경 없음. 상태: 검증 완료. 007 별도 승인 대기.
+
+## 007 학생 프로필·학년 설정 (2026-11-04)
+- 사용자 승인: 설계 및 staging 구현만 진행, 실제 DB 변경 전 별도 승인 필수.
+- 추가: src/profile.js, db/007_student_profiles.sql(미적용), tests/profile.test.mjs.
+- 변경: index.html, src/main.js, src/auth.js, src/styles.css, tests/navigation-markup.test.mjs.
+- 로그인 후 학년 9개 선택·미리보기 구현. 저장 기능은 DB 미적용으로 비활성; 사용자에게 미저장 상태 명시.
+- 운영 main/실제 DB 변경 없음. 상태: 구현 완료·미검증.
