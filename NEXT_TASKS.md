@@ -1,12 +1,12 @@
 # NEXT TASKS
-1. develop 코드의 CI 결과 확인 및 실패 수정
-2. 테스트용 GitHub Pages 배포 환경 구성 (운영과 분리)
-3. 사용자 브라우저 검수 및 001 검증 완료 판정
-4. Supabase 테스트/운영 환경 분리 설계
-5. 002 세부 범위는 실제 마스터 로드맵 확인 후 착수
+## 완료
+- 001 기본 시스템 구축: 검증 완료 (2026-11-04)
+- develop 신규 앱, 자동 테스트 및 테스트 전용 GitHub Pages 배포 성공
+- 사용자 화면 검수 5개 항목 통과
 
-## 즉시 확인할 사항 (2026-11-04)
-1. yeonsanrun-staging → Settings → Pages → Build and deployment → Source: GitHub Actions 선택
-2. Actions → Staging verification and deployment → Run workflow 수동 실행
-3. 성공 확인 후 https://mrsix2000.github.io/yeonsanrun-staging/ 접속
-4. 첫 화면, 8개 영역, 덧셈 정답/오답, 모바일 확인 후 사용자 승인
+## 다음
+1. 002 작업명·범위를 실제 마스터 로드맵과 대조하여 확정
+2. 002 기능을 30~60분 단위로 설계 및 구현
+3. develop 자동 테스트 → staging 배포 → 사용자 검수
+4. Supabase 테스트/운영 분리 설계는 DB 기능 착수 전 수행
+5. 운영 main 및 운영 배포는 별도 명시적 승인 후 진행
