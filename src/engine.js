@@ -47,7 +47,7 @@ export function createQuestion(operation='add',random=Math.random,options={}){
   answer=operation==='add'?a+b:a-b;
   symbol=operation==='add'?'+':'−';
  }else if(operation==='multiply'){
-  a=draw(random,min,max);b=draw(random,2,9);
+  a=draw(random,Math.max(2,min),max);b=draw(random,2,9);
   left=a;right=b;answer=a*b;symbol='×';
  }else{
   a=draw(random,Math.max(2,min),max);b=draw(random,2,9);
