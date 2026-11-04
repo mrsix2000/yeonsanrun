@@ -1,9 +1,10 @@
-import {AREAS,TOTAL_TYPES} from './catalog.js?v=007-1';
-import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=007-1';
-import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=007-1';
-import {isAuthConfigured,validateCredentials,signUp,signIn,signOut,currentSession,subscribeAuthChange} from './auth.js?v=007-1';
-import {GRADES,gradeLabel} from './profile.js?v=007-1';
-import {normalizeRoute,ROUTES} from './navigation.js?v=007-1';
+import {AREAS,TOTAL_TYPES} from './catalog.js?v=007-2';
+import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=007-2';
+import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=007-2';
+import {isAuthConfigured,validateCredentials,signUp,signIn,signOut,currentSession,subscribeAuthChange} from './auth.js?v=007-2';
+import {GRADES,gradeLabel,loadStudentProfile,saveStudentProfile} from './profile.js?v=007-2';
+import {getAuthClient} from './auth.js?v=007-2';
+import {normalizeRoute,ROUTES} from './navigation.js?v=007-2';
 const $=id=>document.getElementById(id);
 $('areas').replaceChildren(...AREAS.map(area=>{
   const item=document.createElement('div');item.className='area';
@@ -143,10 +144,26 @@ function setAuthMode(mode){
  }
  $('auth-message').textContent='';
 }
+let profileUserId=null,profileRequestId=0;
+async function refreshProfile(session){
+ const requestId=++profileRequestId;
+ profileUserId=session?.user?.id||null;
+ $('profile-grade').value='';
+ $('profile-message').textContent=profileUserId?'학년 정보를 불러오는 중입니다.':'';
+ if(!profileUserId)return;
+ try{
+  const client=await getAuthClient();
+  const grade=await loadStudentProfile(client,profileUserId);
+  if(requestId!==profileRequestId)return;
+  $('profile-grade').value=grade;
+  $('profile-message').textContent=grade?'저장된 학년: '+gradeLabel(grade):'학년이 아직 설정되지 않았습니다.';
+ }catch(error){if(requestId===profileRequestId)$('profile-message').textContent='학년 조회 실패: '+(error.message||'다시 시도해 주세요.');}
+}
 function displaySession(session){
  const loggedIn=!!session?.user;
  $('auth-member').hidden=!loggedIn;
  $('profile-section').hidden=!loggedIn;
+ if((session?.user?.id||null)!==profileUserId)refreshProfile(session);
  $('auth-guest').hidden=loggedIn;
  $('auth-user-email').textContent=loggedIn?session.user.email||'이메일 확인 중':'';
  document.querySelector('[data-route="auth"]').textContent=loggedIn?'내 계정':'로그인';
@@ -180,9 +197,18 @@ $('auth-logout').addEventListener('click',async()=>{
  finally{authBusy=false;$('auth-logout').disabled=false}
 });
 $('profile-grade').replaceChildren(...[new Option('학년을 선택해 주세요',''),...GRADES.map(g=>new Option(g.label,g.value))]);
-$('profile-preview').addEventListener('click',()=>{
+$('profile-preview').addEventListener('click',async()=>{
  const grade=$('profile-grade').value;
- $('profile-message').textContent=grade?'학년 미리보기: '+gradeLabel(grade)+' · DB 적용 전이므로 저장되지 않습니다.':'학년을 먼저 선택해 주세요.';
+ if(!grade){$('profile-message').textContent='학년을 먼저 선택해 주세요.';return;}
+ if(!profileUserId){$('profile-message').textContent='로그인이 필요합니다.';return;}
+ const userId=profileUserId,button=$('profile-preview');
+ button.disabled=true;$('profile-message').textContent='저장 중입니다.';
+ try{
+  const client=await getAuthClient();
+  const saved=await saveStudentProfile(client,userId,grade);
+  if(profileUserId===userId)$('profile-message').textContent='저장 완료: '+gradeLabel(saved);
+ }catch(error){if(profileUserId===userId)$('profile-message').textContent='저장 실패: '+(error.message||'다시 시도해 주세요.');}
+ finally{button.disabled=false;}
 });
 setAuthMode('login');
 if(!isAuthConfigured()){
