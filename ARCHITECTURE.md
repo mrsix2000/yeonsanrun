@@ -35,3 +35,10 @@
 - staging workflow: develop 소스 체크아웃 후 npm test 성공 시에만 GitHub Pages 배포.
 - tests/build-integrity.test.mjs: 로컬 import 경로·캐시 버전, HTML id, 참조 요소, 클라이언트 비밀키 패턴 정적 검사.
 - 실제 브라우저 E2E 및 Supabase 테스트 전용 환경은 아직 미구축. 정적 검사와 실제 브라우저 검증은 구분.
+
+## 008 DB 적용 (최신)
+- family_links: 학부모-학생 관계, SELECT만 authenticated 및 양측 소유 RLS. 클라이언트 직접 INSERT/UPDATE/DELETE 금지.
+- family_invites: 128비트 무작위 코드 SHA-256 해시, 10분 TTL, 1회 교환 후 삭제. 직접 테이블 접근 금지.
+- family_link_attempts: 계정별 15분 5회 제한. 잘못된 코드에는 NULL 반환해 시도 횟수 트랜잭션 보존.
+- create_family_invite, redeem_family_invite RPC: SECURITY DEFINER, search_path='', extensions crypto 명시, auth.uid() 확인, authenticated만 EXECUTE.
+- 아직 학부모의 학습 기록 조회 권한은 없음. 학생 코드 발급은 학년 프로필 보유 필요.
