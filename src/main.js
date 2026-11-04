@@ -1,6 +1,7 @@
-import {AREAS,TOTAL_TYPES} from './catalog.js?v=005-1';
-import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=005-1';
-import {normalizeRoute,ROUTES} from './navigation.js?v=005-1';
+import {AREAS,TOTAL_TYPES} from './catalog.js?v=005-2';
+import {OPERATIONS,DIGITS,createQuestion,gradeAnswer} from './engine.js?v=005-2';
+import {SESSION_SIZE,createSession,recordAttempt,summarizeSession} from './session.js?v=005-2';
+import {normalizeRoute,ROUTES} from './navigation.js?v=005-2';
 const $=id=>document.getElementById(id);
 $('areas').replaceChildren(...AREAS.map(area=>{
   const item=document.createElement('div');item.className='area';
@@ -27,7 +28,7 @@ $('menu-toggle').addEventListener('click',()=>{
   const open=$('site-nav').classList.toggle('open');
   $('menu-toggle').setAttribute('aria-expanded',String(open));
 });
-let operation='add',digits=1,condition='any',question=null,answered=0,correct=0,locked=false;
+let operation='add',digits=1,condition='any',question=null,session=createSession(),locked=false;
 const operationButtons=OPERATIONS.map(op=>{
   const button=document.createElement('button');
   button.type='button';button.className='operation-button secondary';button.textContent=op.label;
@@ -48,15 +49,11 @@ function selectOperation(id){
   updateConditionControls();
 }
 function resetSelection(){
-  $('practice-session').hidden=true;
-  $('begin-practice').hidden=false;
-  question=null;answered=0;correct=0;locked=false;
-  $('session-status').textContent='대기 중';
-  $('input-error').textContent='';
-  $('feedback').textContent='';
-  $('answer').value='';
+ session=createSession();question=null;locked=false;
+ $('practice-session').hidden=true;$('begin-practice').hidden=false;
+ $('result-panel').hidden=true;$('question-panel').hidden=false;
+ $('answer').value='';
 }
-
 const digitButtons=DIGITS.map(value=>{
  const button=document.createElement('button');button.type='button';button.className='digit-button secondary';
  button.textContent=value+'자리';button.dataset.digits=String(value);
@@ -84,27 +81,34 @@ for(const button of document.querySelectorAll('[data-condition]')){
  button.addEventListener('click',()=>{condition=button.dataset.condition;updateConditionControls();resetSelection()});
 }
 
+function renderProgress(){
+ const completed=session.attempts.length;
+ $('progress-count').textContent=completed+' / '+SESSION_SIZE+'문제 완료';
+ $('progress-fill').style.width=completed/SESSION_SIZE*100+'%';
+ $('progress-track').setAttribute('aria-valuenow',String(completed));
+}
 function nextQuestion(){
-  try{question=createQuestion(operation,Math.random,{digits,condition})}
-  catch(error){
-    $('session-status').textContent='문제 생성 오류';
-    $('input-error').textContent='문제를 만들지 못했습니다. 다시 시작해 주세요.';
-    $('answer-form').hidden=true;$('next').hidden=true;
-    $('retry-practice').hidden=false;
-    return;
-  }
-  $('retry-practice').hidden=true;
-  $('session-status').textContent='풀이 중';locked=false;
-  $('question').textContent=question.text;
-  $('answer').value='';$('feedback').textContent='';$('input-error').textContent='';
-  $('answer-form').hidden=false;$('next').hidden=true;$('answer').focus();
+ question=createQuestion(operation,Math.random,{digits,condition});
+ locked=false;$('question').textContent=question.text;
+ $('answer').value='';$('answer').focus();
+}
+function showResult(){
+ const result=summarizeSession(session);
+ $('question-panel').hidden=true;$('result-panel').hidden=false;
+ $('result-score').textContent=result.correct+' / '+SESSION_SIZE+'문제 정답 · 정답률 '+result.accuracy+'%';
+ const list=$('mistake-list');list.replaceChildren();
+ if(!result.mistakes.length){const item=document.createElement('li');item.textContent='모두 정답입니다!';list.append(item)}
+ else for(const mistake of result.mistakes){
+  const item=document.createElement('li');
+  item.textContent=mistake.text+' 내 답: '+mistake.input+' / 정답: '+mistake.answer;
+  list.append(item);
+ }
 }
 function startPractice(){
-  answered=0;correct=0;
-  $('input-error').textContent='';
-  $('practice-session').hidden=false;$('begin-practice').hidden=true;
-  $('score').textContent=`현재 점수: 0/0 · 전체 ${TOTAL_TYPES}개 유형 중 자연수 ${digits}자리 ${OPERATIONS.find(op=>op.id===operation).label} 체험`;
-  nextQuestion();
+ session=createSession();locked=false;
+ $('practice-session').hidden=false;$('begin-practice').hidden=true;
+ $('result-panel').hidden=true;$('question-panel').hidden=false;
+ renderProgress();nextQuestion();
 }
 $('start').addEventListener('click',()=>{
   location.hash='practice';renderRoute();selectOperation('add');selectDigits(1);startPractice();
@@ -112,21 +116,14 @@ $('start').addEventListener('click',()=>{
 $('begin-practice').addEventListener('click',startPractice);
 $('history-to-practice').addEventListener('click',()=>{location.hash='practice';renderRoute()});
 $('answer-form').addEventListener('submit',event=>{
-  event.preventDefault();if(locked||!question)return;
-  const input=$('answer').value.trim();
-  if(!/^-?\d+$/.test(input)){
-    $('input-error').textContent='정수를 입력해 주세요.';
-    $('answer').focus();return;
-  }
-  $('input-error').textContent='';locked=true;
-  const ok=gradeAnswer(question,input);answered++;if(ok)correct++;
-  $('feedback').textContent=ok?'정답입니다!':`정답은 ${question.answer}입니다.`;
-  $('session-status').textContent='채점 완료';
-  $('score').textContent=`현재 점수: ${correct}/${answered}`;
-  $('answer-form').hidden=true;$('next').hidden=false;
+ event.preventDefault();if(locked||!question||session.complete)return;
+ const input=$('answer').value.trim();
+ if(!/^-?\\d+$/.test(input)){$('answer').focus();return}
+ locked=true;
+ const ok=gradeAnswer(question,input);
+ session=recordAttempt(session,question,input,ok);
+ renderProgress();
+ if(session.complete)showResult();else nextQuestion();
 });
-$('next').addEventListener('click',nextQuestion);
-$('restart-practice').addEventListener('click',startPractice);
-$('retry-practice').addEventListener('click',startPractice);
-$('answer').addEventListener('input',()=>{$('input-error').textContent=''});
+$('repeat-five').addEventListener('click',startPractice);
 selectOperation('add');selectDigits(1);renderRoute();
