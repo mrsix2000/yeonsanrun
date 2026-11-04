@@ -1,11 +1,11 @@
 # ARCHITECTURE
-- 정적 HTML/CSS/JavaScript, ESM 모듈
-- src/catalog.js: 연산 영역 정의
-- src/engine.js: 문제 생성과 채점
-- src/navigation.js: URL 해시 경로 정규화 (home/practice/history)
-- src/main.js: DOM 렌더링, 해시 라우팅, 체험 훈련 상태
-- src/styles.css: 공통 화면, PC/모바일 반응형 메뉴
-- #home, #practice, #history: 페이지 새로고침과 직접 링크가 가능한 클라이언트 내비게이션
-- 학습 기록 화면은 안내용이며 데이터 저장/DB/Auth 기능 없음
-- develop → staging 전용 GitHub Actions: 주기적 테스트 및 Pages 배포
-- 운영 main 및 운영 사이트 변경 없음. DB 도입 전까지 운영 배포는 사용자 결정에 따라 일괄 진행
+- 정적 HTML/CSS/JavaScript, ES modules
+- src/catalog.js: 8개 영역 및 35개 유형 예정 정보
+- src/engine.js: OPERATIONS, createQuestion(operation, random), createAdditionQuestion(random), gradeAnswer(question, raw)
+- 자연수 기초 4개: 덧셈(1~9), 뺄셈(큰 수에서 작은 수), 곱셈(1~9), 나눗셈(곱셈의 역연산으로 정수 몫 보장)
+- src/navigation.js: URL 해시 라우팅
+- src/main.js: 유형 선택, 세션별 점수, 문제/채점 DOM
+- src/styles.css: 반응형 화면
+- 상태 및 점수는 메모리에만 존재하며 새로고침 시 소멸. DB/Auth 미연결
+- develop → staging 별도 저장소 Actions에서 npm test 후 Pages 배포
+- 운영 main/상용 배포는 일괄 배포 승인까지 보류
