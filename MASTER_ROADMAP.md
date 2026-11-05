@@ -48,3 +48,5 @@
 - 계정별 서버 학습 기록: 설계 중. docs/PRACTICE_HISTORY_SCHEMA_DRAFT.sql 및 src/server-history.js 작성, 운영 DB 미적용, 브라우저 저장 방식 유지.
 
 - 테스트 전용 Supabase yeonsanrun-test 생성 및 practice_sessions/practice_attempts SQL 적용 성공. 실제 두 사용자 계정의 RLS 통합 테스트 미완료.
+
+- 테스트 계정별 기록 E2E: test-history.html 및 src/test-history.js 별도 테스트 화면 구현. 테스트 DB에만 연결. 실제 브라우저 로그인·5문항 서버 저장·재조회는 사용자 검수 대기.
