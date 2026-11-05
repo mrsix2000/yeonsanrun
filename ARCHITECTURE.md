@@ -121,3 +121,5 @@
 - `test-history.html`은 테스트 전용 `src/test-history.js`를 로드하며 URL은 `https://cjrvoamwejcpmhyejamn.supabase.co` (`yeonsanrun-test`)이다. 운영 `phydtapmwwonunqgaupx`와 분리.
 - `practice_sessions`, `practice_attempts` 모두 RLS 활성. 실제 브라우저 가입 계정은 테스트 프로젝트 Auth에만 생성.
 - 확인메일 필수 설정으로 미인증 계정 로그인 차단. 메일 확인 전 저장/조회 E2E는 실행할 수 없음. 운영 프로젝트 설정·DB 변경 없음.
+
+- 2026-11-05: 제공된 테스트 주소의 가입은 Supabase Auth 이메일 rate limit으로 차단됨; test DB `auth.users`에서 해당 주소 미생성 확인. 55초 뒤 재시도도 같은 오류. Auth 설정 변경이나 제한 우회는 하지 않음.
