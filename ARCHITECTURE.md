@@ -111,3 +111,5 @@
 - docs/PRACTICE_HISTORY_SCHEMA_DRAFT.sql: practice_sessions/practice_attempts, 사용자 소유권 기반 SELECT/INSERT RLS, session_id+user_id 복합 FK. 운영 미적용.
 - src/server-history.js: DB 연결용 어댑터 초안. 현재 UI 미연결. 세션과 문항 2단계 INSERT의 부분 실패 가능성 때문에 운영 사용 전 트랜잭션 RPC 및 멱등성 설계 필요.
 - 부모 조회 정책은 의도적으로 미구현. 운영 DB 변경 없음.
+
+- 테스트 DB에 public.save_practice_result SECURITY INVOKER RPC 적용. 5개 문항을 단일 DB 트랜잭션으로 저장하도록 src/server-history.js 어댑터 변경. 운영 DB/UI 미연결.
