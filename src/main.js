@@ -1,3 +1,4 @@
+import {adminReadiness} from './admin-readiness.js?v=010-1';
 import {PLAN_OPTIONS,planPreview,subscriptionPreview} from './billing-preview.js?v=010-1';
 import {studentDashboard,parentDashboard,sessionTrend} from './dashboards.js?v=010-1';
 import {loadHistory,saveHistory,analyzeHistory} from './learning-history.js?v=010-1';
@@ -14,6 +15,9 @@ import {accountCapabilities,sessionIdentity} from './access.js?v=010-1';
 import {normalizeRoute,ROUTES} from './navigation.js?v=010-1';
 import {changeAccountEmail,changeAccountPassword,ACCOUNT_DELETION_STATUS} from './account.js?v=010-1';
 const $=id=>document.getElementById(id);
+const readiness=adminReadiness();
+$('admin-areas').replaceChildren(...readiness.areas.map(name=>{const li=document.createElement('li');li.textContent=name+' · 준비 중';return li}));
+$('admin-message').textContent=readiness.message;
 const planChoice=$('plan-choice');
 planChoice.replaceChildren(...PLAN_OPTIONS.map(p=>new Option(p.label,p.id)));
 function renderPlanPreview(){
@@ -41,7 +45,7 @@ function renderRoute(){
   if(route==='home')renderStudentDashboard();
   $('site-nav').classList.remove('open');
   $('menu-toggle').setAttribute('aria-expanded','false');
-  document.title=({home:'연산런',practice:'연산 훈련',history:'학습 기록',plans:'무료 체험·요금제',auth:'회원가입·로그인'})[route]+' | 연산런';
+  document.title=({home:'연산런',practice:'연산 훈련',history:'학습 기록',plans:'무료 체험·요금제',admin:'운영 준비',auth:'회원가입·로그인'})[route]+' | 연산런';
 }
 window.addEventListener('hashchange',renderRoute);
 document.querySelectorAll('[data-route]').forEach(link=>link.addEventListener('click',()=>queueMicrotask(renderRoute)));
