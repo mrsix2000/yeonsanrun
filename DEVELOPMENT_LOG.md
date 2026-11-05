@@ -212,3 +212,4 @@
 - `authenticated` 역할·학부모 UID로 RLS 조회: 연결 1건, 자녀 session 1건, attempt 5건. 집계값 100% 정답, 평균 풀이 1,000ms, 유형 natural.add.
 - 검증 후 정확히 해당 grant 행 삭제. 삭제 후 부모 조회 grant/session/attempt 각 0건이며 학생 본인 attempts 5건 유지. 테스트 데이터 기록은 보존, grant는 0행.
 - 브라우저 로그인은 `Invalid login credentials`; 실제 리포트 화면은 미검증. 입력값은 새로고침으로 제거. 운영 변경 없음.
+- 2026-11-05: 학부모 테스트 로그인 OTP 복구 폼과 verifyOtp(type=recovery) 추가. 테스트 코드 확장. 운영 사이트/DB 변경 없음. 이메일 템플릿은 대시보드 별도 설정 필요.
