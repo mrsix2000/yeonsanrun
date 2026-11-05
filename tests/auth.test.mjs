@@ -23,3 +23,10 @@ test('auth uses only public config and no secret key',()=>{
  assert.match(config,/SUPABASE_PUBLISHABLE_KEY/);
  assert.doesNotMatch(config,/^export const (SERVICE_ROLE|SUPABASE_SECRET_KEY)/m);
 });
+
+test('password recovery shortcut is present but staging-only',()=>{
+ assert.match(html,/id="auth-recovery-help"[^>]*hidden/);
+ assert.match(html,/id="auth-recovery-link"/);
+ assert.match(html,/href="\.\/test-parent-report\.html"/);
+ assert.match(main,/\$\('auth-recovery-help'\)\.hidden=!serverHistoryEnabled\(\)/);
+});
