@@ -106,3 +106,8 @@
 - src/admin-readiness.js 및 #admin: 운영 준비 상태 안내만 제공. 관리자 권한 인증이나 데이터 접근 기능 아님.
 - src/release-gates.js: 자동 테스트, 실제 브라우저, 계정별 기록, 학부모 리포트, 구독 권한, 결제, 관리자 보안, 운영 승인 모두 증빙될 때만 출시 가능으로 평가.
 - 운영 main 및 Supabase 운영 DB 변경 금지 유지.
+
+## 계정별 기록 서버 설계 초안
+- docs/PRACTICE_HISTORY_SCHEMA_DRAFT.sql: practice_sessions/practice_attempts, 사용자 소유권 기반 SELECT/INSERT RLS, session_id+user_id 복합 FK. 운영 미적용.
+- src/server-history.js: DB 연결용 어댑터 초안. 현재 UI 미연결. 세션과 문항 2단계 INSERT의 부분 실패 가능성 때문에 운영 사용 전 트랜잭션 RPC 및 멱등성 설계 필요.
+- 부모 조회 정책은 의도적으로 미구현. 운영 DB 변경 없음.
