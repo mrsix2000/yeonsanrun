@@ -1,3 +1,4 @@
+import {serverHistoryEnabled,saveCompletedPractice,fetchAccountPractice} from './account-history.js?v=010-1';
 import {adminReadiness} from './admin-readiness.js?v=010-1';
 import {PLAN_OPTIONS,planPreview,subscriptionPreview} from './billing-preview.js?v=010-1';
 import {studentDashboard,parentDashboard,sessionTrend} from './dashboards.js?v=010-1';
@@ -55,6 +56,36 @@ $('menu-toggle').addEventListener('click',()=>{
   $('menu-toggle').setAttribute('aria-expanded',String(open));
 });
 let storedRecords=loadHistory(localStorage);
+let accountRecords=[],accountHistoryUser=null,accountHistoryRequest=0;
+const activeRecords=()=>accountHistoryUser?accountRecords:storedRecords;
+async function refreshAccountHistory(user){
+ const request=++accountHistoryRequest;
+ accountHistoryUser=serverHistoryEnabled()&&user?.id||null;
+ accountRecords=[];
+ if(!accountHistoryUser){$('server-history-status').textContent=serverHistoryEnabled()?'로그인하면 계정별 서버 기록을 조회할 수 있습니다.':'서버 기록은 테스트 환경에서만 제공됩니다.';renderLearningHistory();renderStudentDashboard();return;}
+ $('server-history-status').textContent='계정별 서버 기록을 불러오는 중입니다.';
+ try{
+  const rows=await fetchAccountPractice(await getAuthClient(),user);
+  if(request!==accountHistoryRequest)return;
+  accountRecords=rows;
+  $('server-history-status').textContent='테스트 서버에 저장된 내 기록 '+rows.length+'건';
+ }catch(error){if(request===accountHistoryRequest)$('server-history-status').textContent='서버 기록 조회 실패: '+error.message;}
+ if(request===accountHistoryRequest){renderLearningHistory();renderStudentDashboard();}
+}
+async function saveAccountHistory(sessionSnapshot,mode,userId){
+ if(!serverHistoryEnabled()){return;}
+ if(!userId){$('record-status').textContent+=' 로그인하면 테스트 서버에도 저장할 수 있습니다.';return;}
+ try{
+  const client=await getAuthClient();
+  const {data}=await client.auth.getUser();
+  if(data?.user?.id!==userId)return;
+  await saveCompletedPractice(client,data.user,sessionSnapshot,mode);
+  if(profileUserId!==userId)return;
+  $('record-status').textContent+=' 테스트 서버 저장 완료.';
+  await refreshAccountHistory(data.user);
+ }catch(error){if(profileUserId===userId)$('record-status').textContent+=' 서버 저장 실패: '+error.message;}
+}
+
 let operation='add',digits=1,condition='any',question=null,session=createSession(),locked=false,selectedType='natural.add',questionStartedAt=0,studyMode='free',modeTypes=[],recentAttempts=[];
 const operationButtons=OPERATIONS.map(op=>{
   const button=document.createElement('button');
@@ -123,12 +154,14 @@ function nextQuestion(){
  $('answer').value='';$('answer').focus();
 }
 function showResult(){
+ const completedSession=session,completedMode=studyMode,completedUser=profileUserId;
  const result=summarizeSession(session);
  $('question-panel').hidden=true;$('result-panel').hidden=false;
  $('result-score').textContent=result.correct+' / '+SESSION_SIZE+'문제 정답 · 정답률 '+result.accuracy+'%';
  recentAttempts.push(...session.attempts);
  try{storedRecords=saveHistory(localStorage,session,studyMode);$('record-status').textContent='이 기기에 학습 기록이 저장되었습니다.';}
  catch{$('record-status').textContent='기기 저장소를 사용할 수 없어 이번 학습 기록을 저장하지 못했습니다.';}
+ void saveAccountHistory(completedSession,completedMode,completedUser);
  $('mode-summary').textContent=studyMode==='diagnostic'?'진단 결과 · 취약 유형: '+(diagnosticSummary(session.attempts).weakTypes.join(', ')||'없음'):'풀이 시간: '+(result.totalDurationMs/1000).toFixed(1)+'초';
  const list=$('mistake-list');list.replaceChildren();
  if(!result.mistakes.length){const item=document.createElement('li');item.textContent='모두 정답입니다!';list.append(item)}
@@ -139,17 +172,17 @@ function showResult(){
  }
 }
 function renderStudentDashboard(){
- const data=studentDashboard(storedRecords);
+ const data=studentDashboard(activeRecords());
  $('student-dashboard').textContent=data.headline+' · 최근 7일 '+data.weeklySessions+'회';
  $('student-guidance').textContent=data.guidance;
 }
 function renderLearningHistory(){
- const data=analyzeHistory(storedRecords);
+ const data=analyzeHistory(activeRecords());
  $('history-summary').textContent=data.sessions+'회 훈련 · '+data.total+'문제 · 정답률 '+data.accuracy+'% · 평균 '+data.avgSeconds+'초/문제';
  $('history-periods').textContent='오늘 '+data.periods.day+'회 · 최근 7일 '+data.periods.week+'회 · 최근 30일 '+data.periods.month+'회';
  $('history-guidance').textContent=data.guidance;
  const trend=$('history-trend');trend.replaceChildren();
- for(const entry of sessionTrend(storedRecords)){
+ for(const entry of sessionTrend(activeRecords())){
   const li=document.createElement('li');
   li.textContent=new Date(entry.at).toLocaleDateString('ko-KR')+' · '+entry.accuracy+'% · '+entry.mode;
   trend.append(li);
@@ -257,6 +290,8 @@ async function refreshProfile(session){
  }catch(error){if(requestId===profileRequestId)$('profile-message').textContent='학년 조회 실패: '+(error.message||'다시 시도해 주세요.');}
 }
 function displaySession(session){
+ const nextUser=session?.user?.id||null;
+ if(nextUser!==accountHistoryUser)void refreshAccountHistory(session?.user||null);
  const loggedIn=!!session?.user?.id;
  $('auth-member').hidden=!loggedIn;
  $('profile-section').hidden=!loggedIn;
