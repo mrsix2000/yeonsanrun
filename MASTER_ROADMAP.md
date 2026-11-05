@@ -46,3 +46,5 @@
 
 - 041~045 운영 준비 화면: 사용자 2026-11-05 화면 확인 보고. 안내 화면만 확인, 실제 관리자 서버 기능 미구현이므로 전체 검증 완료 아님.
 - 계정별 서버 학습 기록: 설계 중. docs/PRACTICE_HISTORY_SCHEMA_DRAFT.sql 및 src/server-history.js 작성, 운영 DB 미적용, 브라우저 저장 방식 유지.
+
+- 테스트 전용 Supabase yeonsanrun-test 생성 및 practice_sessions/practice_attempts SQL 적용 성공. 실제 두 사용자 계정의 RLS 통합 테스트 미완료.
