@@ -54,14 +54,28 @@ async function setUser(next){
 try{
  const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.49.10');
  client=createClient(URL,KEY,{auth:{persistSession:true,detectSessionInUrl:true}});
- const {data,error}=await client.auth.getUser();if(error && !location.hash.includes('error='))state('세션 확인 실패: '+error.message);
+
+ // Subscribe before session initialization: recovery links may be consumed during getUser().
+ client.auth.onAuthStateChange((event,session)=>{
+  if(event==='PASSWORD_RECOVERY'){
+   recoveryReady=true;
+   controls();
+   state('이메일 링크 인증 성공. 새 테스트 비밀번호를 입력해 주세요.');
+  }
+  if(session?.user?.id!==user?.id)queueMicrotask(()=>setUser(session?.user||null).catch(e=>state(e.message)));
+ });
+ const recoveryLink=location.hash.includes('type=recovery')||location.search.includes('type=recovery');
+ const {data,error}=await client.auth.getUser();
+ if(error && !location.hash.includes('error='))state('세션 확인 실패: '+error.message);
  await setUser(data?.user||null);
+ // A recovery link may have been processed before the page subscribed on older builds.
+ // Only show the form when a recovery event was actually received; do not grant access from URL alone.
+ if(recoveryReady){controls();state('이메일 링크 인증 성공. 새 테스트 비밀번호를 입력해 주세요.')}
  if(location.hash.includes('error=')){
-  const params=new URLSearchParams(location.hash.slice(1));
-  state('이 링크는 이미 사용되었거나 만료되었습니다. 메일의 링크는 한 번만 열어 주세요. 이미 인증됐다면 새 메일을 요청하지 말고 로그인 상태를 확인하세요.');
+  state('이 링크는 이미 사용되었거나 만료되었습니다. 새 메일을 반복 요청하지 마세요.');
   history.replaceState(null,'',location.pathname+location.search);
  }
- client.auth.onAuthStateChange((event,session)=>{if(event==='PASSWORD_RECOVERY'){recoveryReady=true;controls();state('이메일 링크 인증 성공. 새 테스트 비밀번호를 입력해 주세요.');}if(session?.user?.id!==user?.id)queueMicrotask(()=>setUser(session?.user||null).catch(e=>state(e.message)))});
+
 }catch(e){state('연결 실패: '+e.message)}
 $('parent-login').addEventListener('submit',async event=>{
  event.preventDefault();if(busy||!client)return;
