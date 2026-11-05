@@ -24,3 +24,9 @@ test('default recovery link flow requires no custom SMTP template',()=>{
  assert.match(js,/updateUser\(\{password\}\)/);
  assert.doesNotMatch(js,/verifyOtp|sb_secret_|service_role/);
 });
+
+test('rate-limited recovery request shows a retry-later message',()=>{
+ assert.match(js,/over_email_send_rate_limit/);
+ assert.match(js,/e\?\.status===429/);
+ assert.match(js,/버튼을 반복해서 누르지 마세요/);
+});
