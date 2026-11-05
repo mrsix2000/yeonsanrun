@@ -161,3 +161,10 @@
 - 학부모 테스트 복구의 Supabase 기본 이메일 발송은 서비스 측 429 제한을 받을 수 있음. 프런트엔드는 제한 오류를 안내하며 비밀키/관리자 인증을 브라우저에 두지 않음.
 
 - 026~030 계정 기록: src/account-history.js가 서버 어댑터를 호출하며 테스트 Supabase URL과 정확히 일치할 때만 서버 요청 허용. staging GitHub Actions는 npm test 이후 배포 아티팩트의 공개 Supabase 설정을 테스트 프로젝트로 치환. 운영 소스 config는 기존 운영값 유지. 비로그인 로컬 기록과 로그인 계정 서버 기록은 별도 표시, 자동 병합 없음.
+
+
+## 026~030 계정별 학습 기록 상태 갱신 수정 (2026-11-05)
+- `src/account-history.js`: `shouldRefreshAccountHistory`로 인증 상태 초기화/변경 판단을 순수화.
+- `src/main.js`: 최초 auth 상태가 비로그인(null)이어도 서버 기록 안내를 초기화하도록 처리. 계정 서버 기록과 브라우저 로컬 기록은 분리 상태 유지.
+- staging workflow에서만 테스트 프로젝트 URL/공개 키를 주입하며, 운영 project ref가 없음을 검사한 뒤 배포한다. develop의 공통 설정 파일과 운영 main은 변경하지 않음.
+- develop CI의 새 단위 테스트로 초기 guest 상태 갱신과 계정 변경 조건 검증. 실제 학생 계정 로그인/E2E는 인증 입력 요청 취소로 미검증.
