@@ -115,3 +115,9 @@
 - 테스트 DB에 public.save_practice_result SECURITY INVOKER RPC 적용. 5개 문항을 단일 DB 트랜잭션으로 저장하도록 src/server-history.js 어댑터 변경. 운영 DB/UI 미연결.
 
 - test-history.html: 운영 화면과 분리된 테스트 전용 인증·5문항 서버 저장·조회 페이지. src/test-history.js는 yeonsanrun-test의 공개 publishable 키만 사용하며 운영 Supabase와 연결하지 않음.
+
+
+## 서버 기록 E2E 테스트 환경 (2026-11-05)
+- `test-history.html`은 테스트 전용 `src/test-history.js`를 로드하며 URL은 `https://cjrvoamwejcpmhyejamn.supabase.co` (`yeonsanrun-test`)이다. 운영 `phydtapmwwonunqgaupx`와 분리.
+- `practice_sessions`, `practice_attempts` 모두 RLS 활성. 실제 브라우저 가입 계정은 테스트 프로젝트 Auth에만 생성.
+- 확인메일 필수 설정으로 미인증 계정 로그인 차단. 메일 확인 전 저장/조회 E2E는 실행할 수 없음. 운영 프로젝트 설정·DB 변경 없음.
