@@ -13,8 +13,8 @@ test('test-only family schema uses RLS, hashed short-lived invites, and scoped R
  assert.match(schema,/alter table public\.family_links enable row level security/i);
  assert.match(schema,/alter table public\.family_invites enable row level security/i);
  assert.match(schema,/alter table public\.family_link_attempts enable row level security/i);
- assert.match(schema,/family_invites_deny_api[\\s\\S]*?using \(false\) with check \(false\)/i);
- assert.match(schema,/family_link_attempts_deny_api[\\s\\S]*?using \(false\) with check \(false\)/i);
+ assert.match(schema,/family_invites_deny_api[\s\S]*?using \(false\) with check \(false\)/i);
+ assert.match(schema,/family_link_attempts_deny_api[\s\S]*?using \(false\) with check \(false\)/i);
  assert.match(schema,/code_hash text not null unique/i);
  assert.match(schema,/extensions\.digest\(/i);
  assert.match(schema,/expires_at > pg_catalog\.now\(\)/i);
