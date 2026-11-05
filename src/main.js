@@ -56,13 +56,15 @@ $('menu-toggle').addEventListener('click',()=>{
   $('menu-toggle').setAttribute('aria-expanded',String(open));
 });
 let storedRecords=loadHistory(localStorage);
-let accountRecords=[],accountHistoryUser=null,accountHistoryRequest=0,accountHistoryInitialized=false;
+let accountRecords=[],accountHistoryUser=null,accountHistoryRequest=0,accountHistoryInitialized=false,accountHistoryBusy=false;
 const activeRecords=()=>accountHistoryUser?accountRecords:storedRecords;
 async function refreshAccountHistory(user){
  const request=++accountHistoryRequest;
+ accountHistoryBusy=true;
+ $('history-refresh').disabled=true;
  accountHistoryUser=serverHistoryEnabled()&&user?.id||null;
  accountRecords=[];
- if(!accountHistoryUser){$('server-history-status').textContent=serverHistoryEnabled()?'로그인하면 계정별 서버 기록을 조회할 수 있습니다.':'서버 기록은 테스트 환경에서만 제공됩니다.';renderLearningHistory();renderStudentDashboard();return;}
+ if(!accountHistoryUser){accountHistoryBusy=false;$('server-history-status').textContent=serverHistoryEnabled()?'로그인하면 계정별 서버 기록을 조회할 수 있습니다.':'서버 기록은 테스트 환경에서만 제공됩니다.';renderLearningHistory();renderStudentDashboard();return;}
  $('server-history-status').textContent='계정별 서버 기록을 불러오는 중입니다.';
  try{
   const rows=await fetchAccountPractice(await getAuthClient(),user);
@@ -70,8 +72,18 @@ async function refreshAccountHistory(user){
   accountRecords=rows;
   $('server-history-status').textContent='테스트 서버에 저장된 내 기록 '+rows.length+'건';
  }catch(error){if(request===accountHistoryRequest)$('server-history-status').textContent='서버 기록 조회 실패: '+error.message;}
- if(request===accountHistoryRequest){renderLearningHistory();renderStudentDashboard();}
+ if(request===accountHistoryRequest){accountHistoryBusy=false;$('history-refresh').disabled=false;renderLearningHistory();renderStudentDashboard();}
 }
+$('history-refresh').addEventListener('click',async()=>{
+ if(accountHistoryBusy||!accountHistoryUser)return;
+ try{
+  const client=await getAuthClient();
+  const {data,error}=await client.auth.getUser();
+  if(error)throw error;
+  if(data?.user?.id!==accountHistoryUser){await refreshAccountHistory(data?.user||null);return;}
+  await refreshAccountHistory(data.user);
+ }catch(error){$('server-history-status').textContent='서버 기록 새로고침 실패: '+error.message;}
+});
 async function saveAccountHistory(sessionSnapshot,mode,userId){
  if(!serverHistoryEnabled()){return;}
  if(!userId){$('record-status').textContent+=' 로그인하면 테스트 서버에도 저장할 수 있습니다.';return;}
