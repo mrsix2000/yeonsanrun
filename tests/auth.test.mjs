@@ -30,3 +30,8 @@ test('password recovery shortcut is present but staging-only',()=>{
  assert.match(html,/href="\.\/test-parent-report\.html"/);
  assert.match(main,/\$\('auth-recovery-help'\)\.hidden=!serverHistoryEnabled\(\)/);
 });
+
+test('staging legacy profile/family actions are disabled pending schema',()=>{
+ assert.match(main,/if\(serverHistoryEnabled\(\)\)\s*\{/);
+ for(const id of ['profile-preview','family-preview','family-generate']) assert.match(main,new RegExp("\\$\\('"+id+"'\\)\\.disabled=true"));
+});
