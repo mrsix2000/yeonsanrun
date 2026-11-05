@@ -29,3 +29,11 @@ test('initial guest auth state refreshes account-history status',()=>{
  assert.equal(shouldRefreshAccountHistory('student-1',null,true),true);
  assert.match(main,/shouldRefreshAccountHistory\(accountHistoryUser,nextUser,accountHistoryInitialized\)/);
 });
+
+test('server history refresh is user-scoped and disabled for guests',()=>{
+ assert.match(html,/id="history-refresh"[^>]*disabled/);
+ assert.match(main,/history-refresh'\)\.addEventListener\('click'/);
+ assert.match(main,/accountHistoryBusy\|\|!accountHistoryUser/);
+ assert.match(main,/data\?\.user\?\.id!==accountHistoryUser/);
+ assert.match(main,/accountHistoryBusy=false;\$\('history-refresh'\)\.disabled=false/);
+});
