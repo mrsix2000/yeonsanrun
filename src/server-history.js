@@ -8,12 +8,15 @@ export function toServerSession(record,userId){
 }
 export async function uploadPracticeSession(client,record,userId){
  const {session,attempts}=toServerSession(record,userId);
- const {data,error}=await client.from('practice_sessions').insert(session).select('id').single();
+ const {data:{user}={},error:authError}=await client.auth.getUser();
+ if(authError)throw authError;
+ if(!user||user.id!==userId)throw new Error('현재 인증 사용자와 기록 소유자가 다릅니다');
+ const {data,error}=await client.rpc('save_practice_result',{
+  p_mode:session.mode,p_completed_at:session.completed_at,
+  p_attempts:attempts.map(a=>({typeId:a.type_id,correct:a.correct,durationMs:a.duration_ms}))
+ });
  if(error)throw error;
- const rows=attempts.map(a=>({...a,session_id:data.id}));
- const result=await client.from('practice_attempts').insert(rows);
- if(result.error)throw result.error;
- return data.id;
+ return data;
 }
 export async function readOwnPracticeSessions(client,userId,limit=50){
  if(!userId)throw new RangeError('로그인이 필요합니다');
