@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {serverHistoryEnabled,saveCompletedPractice,fetchAccountPractice} from '../src/account-history.js';
+import {serverHistoryEnabled,saveCompletedPractice,fetchAccountPractice,shouldRefreshAccountHistory} from '../src/account-history.js';
 const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
 const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 test('production configuration cannot upload account history',async()=>{
@@ -20,4 +20,12 @@ test('history UI explains account vs local separation',()=>{
  assert.match(html,/id="server-history-status"/);
  assert.match(html,/두 기록은 자동 합쳐지지 않습니다/);
  assert.match(html,/main\.js\?v=010-1/);
+});
+
+test('initial guest auth state refreshes account-history status',()=>{
+ assert.equal(shouldRefreshAccountHistory(null,null,false),true);
+ assert.equal(shouldRefreshAccountHistory(null,null,true),false);
+ assert.equal(shouldRefreshAccountHistory('student-1','student-1',true),false);
+ assert.equal(shouldRefreshAccountHistory('student-1',null,true),true);
+ assert.match(main,/shouldRefreshAccountHistory\(accountHistoryUser,nextUser,accountHistoryInitialized\)/);
 });
