@@ -175,3 +175,7 @@
 - `index.html`에는 로그인 사용자용 `history-refresh` 버튼(“서버 기록 새로고침”)이 존재하며, 코드상 서버 기록 재조회 핸들러가 구현됨.
 - staging guest 기록 화면 실제 브라우저에서는 해당 컨트롤이 표시되지 않음. 인증 사용자 상태에서 활성화·클릭·재조회 여부는 인증 요청 취소로 미검증.
 - staging 배포는 테스트 Supabase 설정을 사용하도록 workflow에서 주입; 운영 설정 파일을 staging에 그대로 배포하지 않음. 이번 회차 DB 쓰기 없음.
+
+## 2026-11-05 047 학부모 리포트 회귀 테스트
+- 기존 src/parent-report-server.js의 로그인 계정 ID 확인, parent_report_grants 조회, 자녀 ID로 practice_sessions 필터, 조회 상한 200 및 오류 전파를 tests/parent-report-server.test.mjs에서 추가 검사한다.
+- 테스트는 mock 기반 단위 테스트이며 실제 RLS나 연결 자녀의 브라우저 E2E 성공 증거가 아니다. 운영 DB/사이트 및 인증 설계 변경 없음.
