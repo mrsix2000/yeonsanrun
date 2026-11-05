@@ -172,3 +172,5 @@
 ## 테스트 DB 1차 검증
 - SQL 마이그레이션 성공, 두 테이블 4개 소유권 정책 조회 확인. authenticated 역할로 빈 테이블 조회 성공.
 - 가상 사용자 INSERT는 auth.users FK 부재로 실패. 실제 두 계정 교차 접근 검증은 미실행. 검증 완료 아님.
+
+- 테스트 DB SQL: B의 A 세션 조회 및 A 소유 세션 INSERT 차단 성공 (트랜잭션 롤백). RPC 생성 및 SECURITY INVOKER 조회 성공. RPC 실제 저장 통합 호출은 안전 검사 차단으로 미실행. GitHub CI 성공.
