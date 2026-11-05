@@ -98,3 +98,6 @@
 - src/billing-preview.js: 7일 체험 계산(미리보기), 월/6개월/연간 요금제 가격 null, entitlement false, checkoutEnabled false, 결제·환불 요청은 명시적 예외.
 - #plans 라우트: 가격/결제사/환불 정책 미확정 공지, 비활성화 결제 버튼. Supabase Auth/DB/결제 API 호출 없음.
 - 운영 결제 연동은 서버 검증, 웹훅 서명 검증, RLS, 멱등성, 환불/해지 정책과 별도 승인 후 수행.
+
+## 041~045 준비 상태
+- src/admin-readiness.js: 5개 영역 준비 목록과 비활성화 상태만 반환. 서버 기능 없음.
