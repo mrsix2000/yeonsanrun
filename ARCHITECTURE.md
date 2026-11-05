@@ -179,3 +179,9 @@
 ## 2026-11-05 047 학부모 리포트 회귀 테스트
 - 기존 src/parent-report-server.js의 로그인 계정 ID 확인, parent_report_grants 조회, 자녀 ID로 practice_sessions 필터, 조회 상한 200 및 오류 전파를 tests/parent-report-server.test.mjs에서 추가 검사한다.
 - 테스트는 mock 기반 단위 테스트이며 실제 RLS나 연결 자녀의 브라우저 E2E 성공 증거가 아니다. 운영 DB/사이트 및 인증 설계 변경 없음.
+
+
+## 2026-11-05 E2E 재개 시 인증 계정 일치 확인
+- 테스트 staging 로그인은 `browserAuth` 안전 흐름만 사용. 제출 후 화면에 나타난 사용자 계정이 요청 대상과 다르면 인증 성공으로 간주하지 않고 보호되는 학습 동작을 중단한다.
+- 이번 검증에서 화면 계정은 요청 학생 계정과 불일치. 해당 세션 로그아웃; 학생 이메일 재입력도 요청 계정과 일치하지 않아 추가 인증 중단. 비밀번호는 모델이 읽거나 입력하지 않음.
+- test DB는 기존 1 session/5 attempts, parent_report_grants 0건. 임시 연결은 검증 시작 전 생성하지 않음; 기존 학습 기록 보존.
