@@ -192,3 +192,10 @@
 - staging 로그인 전 세션은 guest. 로그인 이메일을 비운 뒤 Work 안전 입력을 요청했으나 화면 값이 대상 계정과 불일치하여 로그인 전 중단. 비밀번호 필드는 건드리지 않음.
 - staging form의 email 입력은 autocomplete=email 속성이지만 이번에는 기존 입력을 비우고 안전 입력만 사용. 안전 입력 결과가 계속 불일치하여 코드/설정 변경이나 추가 재시도는 하지 않음.
 - DB count는 session 1 / attempts 5 / parent_report_grants 0으로 그대로 유지.
+
+
+## 2026-11-05 부모 연결 리포트 새로고침 정리
+- src/parent-report.js의 resetParentReportView가 부모 자녀 목록 새로고침 시 목록과 이전 요약을 초기화한다.
+- src/test-parent-report.js는 링크 목록을 다시 읽을 때 revision을 증가시켜, 이전 연결에서 시작된 비동기 리포트 응답이 새로고침 이후 화면을 덮지 않게 한다.
+- 브라우저에서 연결 해제 후 요약이 남는 현상을 확인해 수정. develop CI 성공; staging 배포 후 UI 재검증 대기. DB 권한 정책이나 학습 기록 데이터는 변경하지 않았다.
+
