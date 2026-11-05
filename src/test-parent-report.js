@@ -3,11 +3,12 @@ import {loadLinkedChildReport} from './parent-report-server.js?v=010-1';
 const URL='https://cjrvoamwejcpmhyejamn.supabase.co';
 const KEY='sb_publishable_ti3tRCDlXvazkCMC6Xz1bQ_SfcGjbeM';
 const $=id=>document.getElementById(id);
-let client,user=null,revision=0,busy=false;
+let client,user=null,revision=0,busy=false,recoveryReady=false;
 function state(message){$('parent-state').textContent=message}
 function controls(){
  $('parent-logout').disabled=!user||busy;
  $('parent-refresh').disabled=!user||busy;
+ $('parent-recovery').hidden=!recoveryReady;
 }
 function reset(){
  revision++;$('parent-children').replaceChildren();
@@ -53,8 +54,14 @@ async function setUser(next){
 try{
  const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.49.10');
  client=createClient(URL,KEY,{auth:{persistSession:true,detectSessionInUrl:true}});
- const {data}=await client.auth.getUser();await setUser(data?.user||null);
- client.auth.onAuthStateChange((event,session)=>{if(event==='PASSWORD_RECOVERY'){document.getElementById('parent-recovery').hidden=false;state('새 테스트 비밀번호를 입력해 주세요.');}if(session?.user?.id!==user?.id)queueMicrotask(()=>setUser(session?.user||null).catch(e=>state(e.message)))});
+ const {data,error}=await client.auth.getUser();if(error && !location.hash.includes('error='))state('세션 확인 실패: '+error.message);
+ await setUser(data?.user||null);
+ if(location.hash.includes('error=')){
+  const params=new URLSearchParams(location.hash.slice(1));
+  state('이 링크는 이미 사용되었거나 만료되었습니다. 메일의 링크는 한 번만 열어 주세요. 이미 인증됐다면 새 메일을 요청하지 말고 로그인 상태를 확인하세요.');
+  history.replaceState(null,'',location.pathname+location.search);
+ }
+ client.auth.onAuthStateChange((event,session)=>{if(event==='PASSWORD_RECOVERY'){recoveryReady=true;controls();state('이메일 링크 인증 성공. 새 테스트 비밀번호를 입력해 주세요.');}if(session?.user?.id!==user?.id)queueMicrotask(()=>setUser(session?.user||null).catch(e=>state(e.message)))});
 }catch(e){state('연결 실패: '+e.message)}
 $('parent-login').addEventListener('submit',async event=>{
  event.preventDefault();if(busy||!client)return;
@@ -77,7 +84,7 @@ $('parent-reset').addEventListener('click',async()=>{
  try{
   const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
   if(error)throw error;
-  state('인증 메일을 보냈습니다. 메일의 6자리 코드를 아래에 입력하세요.');
+  state('재설정 메일을 요청했습니다. 가장 최근 메일의 링크를 한 번만 열어 주세요.');
  }catch(e){state('재설정 요청 실패: '+e.message)}
  finally{busy=false;controls()}
 });
@@ -90,25 +97,9 @@ $('parent-recovery').addEventListener('submit',async event=>{
   const {error}=await client.auth.updateUser({password});
   if(error)throw error;
   $('parent-new-password').value='';
-  $('parent-recovery').hidden=true;
+  recoveryReady=false;controls();
   state('테스트 DB 비밀번호 변경 완료. 이후 이 비밀번호로 로그인하세요.');
  }catch(e){state('비밀번호 변경 실패: '+e.message)}
  finally{busy=false;controls()}
 });
 
-$('parent-otp').addEventListener('submit',async event=>{
- event.preventDefault();if(busy||!client)return;
- const email=$('parent-email').value.trim();
- const token=$('parent-otp-code').value.trim();
- if(!email||!/^[0-9]{6}$/.test(token)){state('이메일과 6자리 인증 코드를 확인하세요.');return}
- busy=true;controls();
- try{
-  const {data,error}=await client.auth.verifyOtp({email,token,type:'recovery'});
-  if(error)throw error;
-  if(!data?.session)throw new Error('복구 인증 세션을 받지 못했습니다.');
-  $('parent-recovery').hidden=false;
-  $('parent-otp-code').value='';
-  state('인증 성공. 새 테스트 비밀번호를 설정하세요.');
- }catch(e){state('인증 실패: '+e.message)}
- finally{busy=false;controls()}
-});
