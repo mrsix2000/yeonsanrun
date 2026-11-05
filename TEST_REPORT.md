@@ -160,3 +160,7 @@
 ## 036~040 테스트
 - tests/billing-preview.test.mjs: 7일 체험 계산/만료, 요금제 가격 null, 결제 및 환불 예외, UI 버튼 disabled 및 고지 확인.
 - develop CI 41937681538 성공. 실제 스테이징 화면 및 사용자 검수 대기. 실결제·환불·서버 권한은 테스트 대상 아님(미구현).
+
+## 041~050 검증 범위
+- tests/admin-readiness.test.mjs, tests/release-gates.test.mjs 추가. 관리자 준비 화면 연결, 기본 출시 차단, 필수 증빙 누락 시 출시 차단 검증.
+- CI 확인 별도. 실제 관리자 권한/RLS, 결제·환불, 모바일 실기기, 스테이징 E2E 미실행. 상용 출시 불가.
