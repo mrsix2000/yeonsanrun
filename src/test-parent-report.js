@@ -16,7 +16,7 @@ function reset(){
 }
 async function loadChildren(){
  if(!user)return;
- const id=user.id,token=revision;
+ const id=user.id,token=++revision;
  resetParentReportView($('parent-children'),$('parent-summary'));
  const {data,error}=await client.from('parent_report_grants').select('student_user_id,created_at').eq('parent_user_id',id).order('created_at',{ascending:false});
  if(error)throw error;
