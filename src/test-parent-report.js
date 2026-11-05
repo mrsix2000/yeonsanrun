@@ -52,9 +52,9 @@ async function setUser(next){
 }
 try{
  const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.49.10');
- client=createClient(URL,KEY,{auth:{persistSession:true,detectSessionInUrl:false}});
+ client=createClient(URL,KEY,{auth:{persistSession:true,detectSessionInUrl:true}});
  const {data}=await client.auth.getUser();await setUser(data?.user||null);
- client.auth.onAuthStateChange((_event,session)=>{if(session?.user?.id!==user?.id)queueMicrotask(()=>setUser(session?.user||null).catch(e=>state(e.message)))});
+ client.auth.onAuthStateChange((event,session)=>{if(event==='PASSWORD_RECOVERY'){document.getElementById('parent-recovery').hidden=false;state('새 테스트 비밀번호를 입력해 주세요.');}if(session?.user?.id!==user?.id)queueMicrotask(()=>setUser(session?.user||null).catch(e=>state(e.message)))});
 }catch(e){state('연결 실패: '+e.message)}
 $('parent-login').addEventListener('submit',async event=>{
  event.preventDefault();if(busy||!client)return;
@@ -68,3 +68,30 @@ $('parent-logout').addEventListener('click',async()=>{
  catch(e){state('로그아웃 실패: '+e.message)}finally{busy=false;controls()}
 });
 $('parent-refresh').addEventListener('click',()=>loadChildren().catch(e=>state('조회 실패: '+e.message)));
+
+$('parent-reset').addEventListener('click',async()=>{
+ if(busy||!client)return;
+ const email=$('parent-email').value.trim();
+ if(!email){state('먼저 이메일을 입력해 주세요.');return}
+ busy=true;controls();
+ try{
+  const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+  if(error)throw error;
+  state('재설정 메일을 요청했습니다. 새로 도착한 메일 링크를 열어 주세요.');
+ }catch(e){state('재설정 요청 실패: '+e.message)}
+ finally{busy=false;controls()}
+});
+$('parent-recovery').addEventListener('submit',async event=>{
+ event.preventDefault();if(busy||!client)return;
+ busy=true;controls();
+ try{
+  const password=$('parent-new-password').value;
+  if(password.length<8)throw new Error('8자 이상 입력해 주세요.');
+  const {error}=await client.auth.updateUser({password});
+  if(error)throw error;
+  $('parent-new-password').value='';
+  $('parent-recovery').hidden=true;
+  state('테스트 DB 비밀번호 변경 완료. 이후 이 비밀번호로 로그인하세요.');
+ }catch(e){state('비밀번호 변경 실패: '+e.message)}
+ finally{busy=false;controls()}
+});
