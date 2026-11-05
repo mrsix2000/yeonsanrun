@@ -15,11 +15,12 @@ test('test client never uses production project',()=>{
  assert.doesNotMatch(index,/test-parent-report.html/);
 });
 
-test('test recovery uses six-digit OTP and a verified session before password update',()=>{
- for(const id of ['parent-reset','parent-otp','parent-otp-code','parent-recovery','parent-new-password'])assert.ok(html.includes('id="'+id+'"'));
+test('default recovery link flow requires no custom SMTP template',()=>{
+ for(const id of ['parent-reset','parent-recovery','parent-new-password'])assert.ok(html.includes('id="'+id+'"'));
+ assert.doesNotMatch(html,/id="parent-otp"/);
  assert.match(js,/resetPasswordForEmail/);
- assert.match(js,/verifyOtp\(\{email,token,type:'recovery'\}\)/);
- assert.match(js,/if\(!data\?\.session\)/);
+ assert.match(js,/PASSWORD_RECOVERY/);
+ assert.match(js,/recoveryReady=true/);
  assert.match(js,/updateUser\(\{password\}\)/);
- assert.doesNotMatch(js,/service_role|sb_secret_/);
+ assert.doesNotMatch(js,/verifyOtp|sb_secret_|service_role/);
 });
