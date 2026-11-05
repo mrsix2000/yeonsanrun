@@ -20,3 +20,7 @@ export async function fetchAccountPractice(client,user){
   }))
  }));
 }
+
+export function shouldRefreshAccountHistory(currentUserId,nextUserId,initialized=false){
+ return !initialized||currentUserId!==nextUserId;
+}
