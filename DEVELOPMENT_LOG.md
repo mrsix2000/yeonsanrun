@@ -206,3 +206,9 @@
 - 브라우저 인증은 사용자 승인된 secure browser auth 흐름으로 시도했으나 화면 오류 `Invalid login credentials`. 재시도하지 않고 페이지를 새로고침해 입력값 제거.
 - 연결 grant는 생성하지 않음. test DB 권한/데이터 변경 없음. 운영 사이트·DB 변경 없음.
 - 다음: 사용자가 secure browser auth 입력에서 올바른 학부모 계정 비밀번호로 재시도 선택 시 이어서 실행.
+
+## 2026-11-05 부모 리포트 임시 연결 DB 권한 확인
+- 사용자 승인에 따라 yeonsanrun-test에서 지정된 학부모/학생 사이 parent_report_grants 1행을 임시 생성.
+- `authenticated` 역할·학부모 UID로 RLS 조회: 연결 1건, 자녀 session 1건, attempt 5건. 집계값 100% 정답, 평균 풀이 1,000ms, 유형 natural.add.
+- 검증 후 정확히 해당 grant 행 삭제. 삭제 후 부모 조회 grant/session/attempt 각 0건이며 학생 본인 attempts 5건 유지. 테스트 데이터 기록은 보존, grant는 0행.
+- 브라우저 로그인은 `Invalid login credentials`; 실제 리포트 화면은 미검증. 입력값은 새로고침으로 제거. 운영 변경 없음.
