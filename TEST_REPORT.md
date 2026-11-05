@@ -237,3 +237,14 @@
 - 026~030 서버 기록 UI 통합: 테스트 프로젝트 외 업로드 차단, 로컬 저장 유지, 완료 세션 업로드 및 계정별 기록 표시 정적/단위 테스트 추가. CI와 staging 배포 결과 별도 확인. 실제 로그인→5문제→재로그인 조회 브라우저 테스트 미실행; 결과 구현 완료·미검증.
 
 - 추가 확인: develop CI commit 6c521452 완료/success. 초기 새 테스트의 잘못된 캐시 버전 기대값으로 CI 실패했으나 수정 후 전체 자동 테스트 통과. staging workflow run 41976420080 재실행 요청, 완료 여부 별도 확인. 브라우저 E2E 여전히 미실행.
+
+
+## 2026-11-05 026~030 통합 검증
+- 성공 — 실제 브라우저: staging 홈/훈련/기록 화면 표시. 로그인 전 서버상태 초기화 수정 후 기록 화면에 `로그인하면 계정별 서버 기록을 조회할 수 있습니다` 표시.
+- 성공 — 로그인 없는 로컬 흐름: 5문제 완료, 5/5·100%, 총 풀이 20.8초. 기록 화면에 1회·5문항·100%·평균 4.2초 표시, 새로고침 뒤 기록 유지.
+- 성공 — test DB 분리 근거: `yeonsanrun-staging` workflow 배포 전 test project URL/key 주입 및 운영 project ref 부재 검사; staging run 41978712676 성공. 운영 DB에 접속하거나 쓰기하지 않음.
+- 성공 — RLS/권한 role simulation(test DB): 학생 본인 session 1/attempt 5 조회, 다른 authenticated 계정은 대상 기록 0/0, anon은 SELECT privilege 거부. guest 브라우저 훈련은 서버 기록을 만들지 않았고 DB 기존 1/5 유지.
+- 성공 — 자동 회귀: `tests/account-history.test.mjs` 초기 guest 상태 helper 테스트 포함, develop CI 41978367901 success. 관련 파일: src/account-history.js, src/main.js, tests/account-history.test.mjs.
+- 미실행 — 학생 테스트 계정 로그인: 안전 인증 입력 요청이 취소됨. 따라서 로그인 후 5문항, 새 session 1건+attempts 5건 저장, 서버 기록 조회, 로그아웃/재로그인 지속성은 미검증.
+- 미실행 — 모바일 실제 기기/모바일 뷰포트: 사용 가능한 브라우저 도구에서 viewport 변경이 지원되지 않음.
+- 상태: 부분 검증. 기록 화면의 서버 데이터 조회 성공을 주장하지 않음. 사용자 최종 승인 전 026~030은 검증 완료로 승격하지 않음.
