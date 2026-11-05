@@ -211,3 +211,10 @@
 ## 2026-11-05 비밀번호 복구 진입점 보강
 - develop에서 index.html, src/main.js, tests/auth.test.mjs 수정. 로그인 화면에 비밀번호 복구 안내를 추가하되 `serverHistoryEnabled()` 조건으로 테스트 스테이징에서만 표시. 기존 테스트 학부모 복구 화면을 학생도 이용하는 임시 우회 경로임을 명시. 운영 사이트 배포 없음.
 - 신규 회귀 테스트 코드 작성. 실제 CI 결과 및 브라우저 표시 확인은 아직 미확인. 정식 통합 복구 화면/링크 처리는 후속 작업이며 현재 임시 진입점을 완료 기능으로 오인하지 않음.
+
+
+## 2026-11-05 test schema investigation
+- Read-only test DB inspection: student_profiles and family_links tables absent; create_family_invite and redeem_family_invite RPCs absent. parent_report_grants exists. No production DB access.
+- develop guard commit 93528ca disables unsupported legacy profile/family actions on staging; regression test added in dcb1e25. Browser and CI verification still pending.
+- Existing db/007_student_profiles.sql documents profile schema; db/008_family_links.sql is descriptive, not executable migration. Do not run it as SQL. Build and review full secure test-only migration with RLS before enabling family features.
+- Existing student practice 2 sessions / 10 attempts and report grants 0 preserved.
