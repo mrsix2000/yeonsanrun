@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>연산런 테스트 서버 기록</title><link rel="stylesheet" href="./src/styles.css?v=010-1"><script type="module" src="./src/test-history.js?v=010-1"></script></head>
+<body><main class="shell"><section class="panel"><h1>연산런 테스트 서버 기록</h1><p>테스트 전용 Supabase에만 연결합니다. 운영 계정으로 로그인하지 마세요. 실제 학습 기록이 아닌 테스트용 5문항을 저장합니다.</p>
+<p id="test-state" role="status">연결 준비 중</p><form id="test-auth"><label for="test-email">테스트 이메일</label><input id="test-email" type="email" required autocomplete="email"><label for="test-password">테스트 비밀번호 (8자 이상)</label><input id="test-password" type="password" minlength="8" required><button id="test-signup" type="button">테스트 계정 가입</button><button type="submit">로그인</button></form>
+<button id="test-logout" type="button" disabled>로그아웃</button>
+<h2>5문항 테스트 저장</h2><p>다음 문제에 답을 입력하세요.</p><p id="test-question">로그인 후 시작</p><form id="test-answer"><input id="test-input" type="number" inputmode="numeric" required disabled><button id="test-submit" type="submit" disabled>정답 제출</button></form><p id="test-progress"></p>
+<button id="test-refresh" type="button" disabled>서버 기록 다시 조회</button><ul id="test-history"></ul>
+<p>다른 계정으로 로그인하면 해당 계정의 서버 기록만 조회되어야 합니다. 테스트 종료 후 운영 사이트에는 연결하지 않습니다.</p></section></main></body></html>
