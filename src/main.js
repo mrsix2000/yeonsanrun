@@ -264,6 +264,7 @@ studyModeSelect.addEventListener('change',()=>{
 studyModeSelect.dispatchEvent(new Event('change'));
 renderRoute();
 
+$('auth-recovery-help').hidden=!serverHistoryEnabled();
 let authMode='login',authBusy=false;
 function setAuthMode(mode){
  authMode=mode;
