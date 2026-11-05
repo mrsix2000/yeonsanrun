@@ -14,3 +14,12 @@ test('test client never uses production project',()=>{
  const index=readFileSync(new URL('../index.html',import.meta.url),'utf8');
  assert.doesNotMatch(index,/test-parent-report.html/);
 });
+
+test('test recovery uses six-digit OTP and a verified session before password update',()=>{
+ for(const id of ['parent-reset','parent-otp','parent-otp-code','parent-recovery','parent-new-password'])assert.ok(html.includes('id="'+id+'"'));
+ assert.match(js,/resetPasswordForEmail/);
+ assert.match(js,/verifyOtp\(\{email,token,type:'recovery'\}\)/);
+ assert.match(js,/if\(!data\?\.session\)/);
+ assert.match(js,/updateUser\(\{password\}\)/);
+ assert.doesNotMatch(js,/service_role|sb_secret_/);
+});
