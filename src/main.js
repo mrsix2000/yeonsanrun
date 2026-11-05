@@ -265,6 +265,15 @@ studyModeSelect.dispatchEvent(new Event('change'));
 renderRoute();
 
 $('auth-recovery-help').hidden=!serverHistoryEnabled();
+// Test database currently lacks the legacy profile/family schema; avoid presenting unusable actions.
+if(serverHistoryEnabled()){
+ $('profile-preview').disabled=true;
+ $('family-preview').disabled=true;
+ $('family-generate').disabled=true;
+ $('profile-message').textContent='테스트 DB에 학생 프로필 기능이 아직 준비되지 않았습니다.';
+ $('family-message').textContent='테스트 DB에 가족 연결 기능이 아직 준비되지 않았습니다.';
+}
+
 let authMode='login',authBusy=false;
 function setAuthMode(mode){
  authMode=mode;
