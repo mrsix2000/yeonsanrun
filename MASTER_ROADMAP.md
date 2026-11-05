@@ -87,3 +87,9 @@
 - 사전 확인: test project `yeonsanrun-test` 활성, 해당 테스트 학생 기록 1세션·5문항, 승인 grant 0건.
 - 브라우저 학부모 인증은 `Invalid login credentials`로 실패. 입력 폼 초기화 완료. 인증 실패 후 재시도하지 않았으며 grant를 생성하지 않아 DB 권한은 바뀌지 않음.
 - 상태: 미검증/차단 — 사용자가 안전한 브라우저 인증 입력으로 올바른 테스트 비밀번호를 제공한 뒤 재개 필요.
+
+## 2026-11-05 학부모 권한 RLS 임시 grant 검증 결과
+- 사용자의 승인 범위에서 테스트 DB에 부모-학생 grant 1건을 임시 생성하고 SQL authenticated 역할로 읽기 검증 후 삭제함.
+- 연결 상태: 부모가 grant 1건, 대상 세션 1건, 문항 시도 5건을 읽음. 표시 가능한 기록 집계는 정답률 100%, 평균 풀이 1,000ms, 유형 natural.add 1종.
+- grant 해제 후 부모 visible grant/session/attempt 모두 0건. 학생 본인 attempt 5건 조회 유지. 임시 grant 0건으로 복구 확인.
+- 브라우저 인증은 `Invalid login credentials`로 실패했으므로 실제 페이지의 자녀 목록과 지표 렌더링은 여전히 미검증. 전체 기능 상태 검증 완료 아님.
