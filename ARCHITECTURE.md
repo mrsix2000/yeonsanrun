@@ -206,3 +206,11 @@
 - test DB 최종 확인: 지정 부모-학생 grant 0건, 학생 학습 기록 2세션/10시도 보존. 학부모 테스트 세션 로그아웃 완료.
 - 자동 테스트 및 staging 배포 성공. 모바일 미실행. 기존 RLS 교차 계정 검증은 재실행하지 않고 이전 성공 이력을 유지. 운영 환경 미변경.
 - 사용자 최종 승인 전 작업 상태는 구현 완료·미검증으로 유지한다.
+
+
+## 2026-11-05 테스트 전용 프로필·가족 스키마 갱신
+- develop의 `db/009_test_only_family_profile_schema.sql`을 테스트 프로젝트 ref `cjrvoamwejcpmhyejamn`에 적용했다. student_profiles는 소유자만 읽고 쓰며, family_links는 연결된 양측만 읽고 직접 쓰기는 허용하지 않는다. 초대/시도 테이블은 API 역할에 deny-all RLS를 둔다.
+- `create_family_invite()` 및 `redeem_family_invite(text,text)`는 인증 사용자만 실행 가능하고, `search_path=''`, 128비트 일회 코드 해시·10분 만료·15분 5회 시도 제한을 사용한다. 클라이언트 `src/family.js`의 RPC 이름과 인자명과 일치한다.
+- 보안 어드바이저의 authenticated SECURITY DEFINER 경고 2건은 위 RPC에 한정된다. 함수는 auth.uid() 검증과 제한된 테이블 접근을 수행한다. 기존 leaked-password 보호 비활성 경고는 이번 작업에서 변경하지 않았다.
+- 학부모 리포트는 현재 `parent_report_grants` 정책으로 별도 권한을 판단한다. `family_links`가 리포트 권한을 자동 부여하지 않으므로 두 기능 간 권한 연결은 아직 미구현·미검증이다.
+- 실제 계정 브라우저 검증은 안전 입력 전 자동 검토에서 차단되었으며 DB 행은 추가되지 않았다. 기존 2세션/10문항과 grant 0건은 보존했다.

@@ -218,3 +218,13 @@
 - develop guard commit 93528ca disables unsupported legacy profile/family actions on staging; regression test added in dcb1e25. Browser and CI verification still pending.
 - Existing db/007_student_profiles.sql documents profile schema; db/008_family_links.sql is descriptive, not executable migration. Do not run it as SQL. Build and review full secure test-only migration with RLS before enabling family features.
 - Existing student practice 2 sessions / 10 attempts and report grants 0 preserved.
+
+
+## 2026-11-05 남은 E2E
+1. 브라우저 안전 검토가 차단한 학생 계정 인증을 재개한다. 이메일 화면 값은 보였지만 정확한 일치 검증으로 인정되지 않았다. 사용자 승인 없이 비밀번호 입력을 다시 요청하지 않는다. 비밀번호는 채팅으로 받지 않고 안전 입력만 사용하며, 재설정 메일은 보내지 않는다.
+2. 로그인 후에만 학생 5문항 서버 저장·학습 기록 새로고침·로그아웃/재로그인 유지·프로필 저장을 검증한다. 기존 2세션/10문항은 보존한다.
+3. 가족 연결 생성은 테스트 전용·임시 범위에서만 한다. 학부모에게 학생 기록 접근을 부여하는 시점에는 사용자에게 정확한 테스트 계정과 접근 범위를 알려 확인을 받은 뒤 연결한다. 연결 해제 후 관계 0건을 확인한다.
+4. 현재 가족 링크와 부모 리포트 권한(parent_report_grants)은 별개다. 실제 연동 전까지 학부모 리포트 통합 성공으로 표시하지 않는다.
+5. 모바일 뷰포트/기기 검증과 비밀번호 복구 링크 실제 흐름은 미검증. 복구 메일 발송은 별도 지시 없이는 하지 않는다.
+- 2026-11-05 CI 42028109667 및 staging 42028235066 통과. 자동 검토가 막은 인증을 우회하지 말고 사용자 확인 후 이어간다.
+- 운영 사이트/DB, 결제, 기존 학습 기록 변경 금지. 최종 승인 전 상태는 구현 완료·미검증.

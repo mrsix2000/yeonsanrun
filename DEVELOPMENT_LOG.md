@@ -301,3 +301,12 @@
 - test DB 확인: 학습 2세션·10시도, 임시 부모 리포트 권한 0건 보존. student_profiles/family_links와 연결 RPC는 미구축.
 - 정식 프로필·가족 연결 구현에는 테스트 DB 스키마·RLS·RPC와 클라이언트 인터페이스를 일괄 검증해야 함. 기존 가족 연결 SQL 파일은 설명 문서이므로 직접 실행 금지.
 - 자동 테스트 실제 실행·신규 staging 배포·모바일 E2E는 아직 확인되지 않았음. 운영 환경 변경 없음.
+
+
+## 2026-11-05 프로필·가족 스키마 및 재검증 묶음
+- 테스트 DB에 테스트 전용 migration 009 적용 상태와 RLS, RPC 권한 확인. student_profiles/family_links/family_invites/family_link_attempts 데이터 행은 모두 0건. 기존 practice_sessions 2건, practice_attempts 10건, parent_report_grants 0건 유지.
+- develop의 테스트에서 private-table deny policy 정규식이 과도하게 이스케이프되어 CI 42027354177이 실패했다. `tests/family.test.mjs` 정규식을 수정해 9947ba5에 반영; CI 42028109667 성공.
+- staging workflow 주석 변경으로 배포 트리거; verify 및 Pages deploy 단계가 모두 성공한 run 42028235066. 이 workflow는 yeonsanrun/develop를 체크아웃하고 test ref/key만 주입함.
+- 브라우저: staging 로그인 및 테스트 전용 복구 안내 표시 확인. 첫 안전 로그인은 다른 저장 계정으로 로그인되어 즉시 로그아웃. 학생 이메일을 직접 입력했고 화면에 지정 주소가 표시되었으나 자동 보안 검토가 정확한 일치 증거로 인정하지 않아 비밀번호 입력 요청을 차단했다. 해당 요청을 우회하거나 재시도하지 않음.
+- 비밀번호 재설정 메일 미발송. 학생 로그인 이후 5문제 풀이·서버 저장·기록 재조회·프로필 저장·가족 연결·학부모 리포트는 미실행. 모바일 뷰포트도 미실행.
+- 사용자 승인 전 상태는 구현 완료·미검증 유지. 운영 사이트/DB, 결제, 기존 학습 데이터 변경 없음.
