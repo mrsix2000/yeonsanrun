@@ -201,3 +201,5 @@
 - tests/parent-report.test.mjs 정답률·평균 속도·취약 유형·빈 기록 단위 테스트 CI 성공(41965713964). 실제 부모 로그인 후 자녀 데이터 조회는 미구현·미실행. 사용자 E2E 통과 보고 수신, 상세 단계별 로그는 별도 미확인.
 
 - 테스트 DB SQL 적용 성공. 서버 어댑터 단위 테스트 추가. 실제 부모·자녀·제3자 계정 SQL 교차 접근 테스트는 도구 안전 검사 차단으로 미실행. Supabase 보안 advisor: leaked password protection disabled 경고 1건(설정 후속).
+
+- tests/test-parent-report-page.test.mjs: 테스트 페이지 DOM/인증/조회 연동, 운영 프로젝트 참조 금지, 운영 index 비노출 검사. 실제 브라우저 인증 및 자녀별 기록 조회는 별도 Work E2E 필요.
