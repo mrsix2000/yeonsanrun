@@ -18,3 +18,35 @@ test('unlinked and mismatched parent blocked before history read',async()=>{
  assert.equal(c.calls.some(x=>x[0]==='practice_sessions'),false);
  await assert.rejects(loadLinkedChildReport(client(),parent,'parent'),RangeError);
 });
+
+test('different signed-in account cannot request a parent report',async()=>{
+ const c=client();
+ c.auth.getUser=async()=>({data:{user:{id:'intruder'}},error:null});
+ await assert.rejects(loadLinkedChildReport(c,parent,child),/인증 정보/);
+ assert.equal(c.calls.length,0);
+});
+test('database failures are surfaced rather than treated as empty reports',async()=>{
+ const c=client();
+ const original=c.from;
+ c.from=table=>{
+  const q=original(table);
+  q.limit=async()=>({data:null,error:new Error(table+' unavailable')});
+  return q;
+ };
+ await assert.rejects(loadLinkedChildReport(c,parent,child),/parent_report_grants unavailable/);
+ const d=client();
+ const base=d.from;
+ d.from=table=>{
+  const q=base(table);
+  if(table==='practice_sessions')q.limit=async()=>({data:null,error:new Error('history unavailable')});
+  return q;
+ };
+ await assert.rejects(loadLinkedChildReport(d,parent,child),/history unavailable/);
+});
+test('request limit is capped and empty authorized history is valid',async()=>{
+ const c=client([{student_user_id:child}],[]);
+ const result=await loadLinkedChildReport(c,parent,child,10000);
+ assert.equal(result.limit,200);
+ assert.equal(result.sessions,0);
+ assert.equal(result.questions,0);
+});
