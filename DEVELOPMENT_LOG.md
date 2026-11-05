@@ -217,3 +217,5 @@
 - 2026-11-05: 인증 로그에서 첫 verify 성공(303, login), 이후 같은 토큰 재사용 403 확인. OTP UI 제거, 기본 복구 링크 복원, 복구 이벤트/오류 안내 개선.
 
 - 2026-11-05: test parent recovery 요청 429 over_email_send_rate_limit 확인. 이메일 복구 E2E는 보류하고, UI에 발송 제한·재시도 안내 및 자동 테스트 추가. 독립 작업 계속 진행.
+
+- 2026-11-05: src/account-history.js 신설, src/main.js/index.html 수정, tests/account-history.test.mjs 신설. 완료 5문제 로컬 저장 유지 후 로그인 사용자에 한해 테스트 서버 RPC 업로드, 로그인 시 계정별 조회. staging workflow 테스트 DB 격리 변경. 실제 브라우저 사용자 검수 전까지 미검증.
