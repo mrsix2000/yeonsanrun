@@ -5,7 +5,7 @@ const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
 const css=readFileSync(new URL('../src/styles.css',import.meta.url),'utf8');
 test('화면과 메뉴 경로 연결',()=>{
- for(const route of ['home','practice','history','plans','auth']){
+ for(const route of ['home','practice','history','plans','admin','auth']){
   assert.match(html,new RegExp('id="view-'+route+'"'));
   assert.match(html,new RegExp('data-route="'+route+'"'));
  }
