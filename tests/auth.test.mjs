@@ -31,7 +31,10 @@ test('password recovery shortcut is present but staging-only',()=>{
  assert.match(main,/\$\('auth-recovery-help'\)\.hidden=!serverHistoryEnabled\(\)/);
 });
 
-test('staging legacy profile/family actions are disabled pending schema',()=>{
- assert.match(main,/if\(serverHistoryEnabled\(\)\)\s*\{/);
- for(const id of ['profile-preview','family-preview','family-generate']) assert.match(main,new RegExp("\\$\\('"+id+"'\\)\\.disabled=true"));
+test('profile and family controls rely on the database after schema setup',()=>{
+ for(const id of ['profile-section','profile-grade','profile-preview','family-section','family-preview','family-generate'])assert.match(html,new RegExp('id="'+id+'"'));
+ assert.match(main,/refreshProfile/);
+ assert.match(main,/refreshFamily/);
+ assert.doesNotMatch(main,/테스트 DB에 학생 프로필 기능이 아직 준비되지 않았습니다/);
+ assert.doesNotMatch(main,/테스트 DB에 가족 연결 기능이 아직 준비되지 않았습니다/);
 });
