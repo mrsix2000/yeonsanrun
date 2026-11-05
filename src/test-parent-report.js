@@ -77,7 +77,7 @@ $('parent-reset').addEventListener('click',async()=>{
  try{
   const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
   if(error)throw error;
-  state('재설정 메일을 요청했습니다. 새로 도착한 메일 링크를 열어 주세요.');
+  state('인증 메일을 보냈습니다. 메일의 6자리 코드를 아래에 입력하세요.');
  }catch(e){state('재설정 요청 실패: '+e.message)}
  finally{busy=false;controls()}
 });
@@ -93,5 +93,22 @@ $('parent-recovery').addEventListener('submit',async event=>{
   $('parent-recovery').hidden=true;
   state('테스트 DB 비밀번호 변경 완료. 이후 이 비밀번호로 로그인하세요.');
  }catch(e){state('비밀번호 변경 실패: '+e.message)}
+ finally{busy=false;controls()}
+});
+
+$('parent-otp').addEventListener('submit',async event=>{
+ event.preventDefault();if(busy||!client)return;
+ const email=$('parent-email').value.trim();
+ const token=$('parent-otp-code').value.trim();
+ if(!email||!/^[0-9]{6}$/.test(token)){state('이메일과 6자리 인증 코드를 확인하세요.');return}
+ busy=true;controls();
+ try{
+  const {data,error}=await client.auth.verifyOtp({email,token,type:'recovery'});
+  if(error)throw error;
+  if(!data?.session)throw new Error('복구 인증 세션을 받지 못했습니다.');
+  $('parent-recovery').hidden=false;
+  $('parent-otp-code').value='';
+  state('인증 성공. 새 테스트 비밀번호를 설정하세요.');
+ }catch(e){state('인증 실패: '+e.message)}
  finally{busy=false;controls()}
 });
