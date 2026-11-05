@@ -157,3 +157,5 @@
 - 테스트 전용 학부모 복구: test-parent-report.html → src/test-parent-report.js → Supabase test Auth resetPasswordForEmail → verifyOtp(type=recovery) → updateUser. 운영 DB와 분리. Recovery 메일 템플릿에 {{ .Token }} 필수.
 
 - 정정: 테스트 학부모 비밀번호 복구는 기본 Supabase 이메일 링크(resetPasswordForEmail, PASSWORD_RECOVERY 이벤트, updateUser)를 사용하며 SMTP/OTP 템플릿 변경은 요구하지 않음.
+
+- 학부모 테스트 복구의 Supabase 기본 이메일 발송은 서비스 측 429 제한을 받을 수 있음. 프런트엔드는 제한 오류를 안내하며 비밀키/관리자 인증을 브라우저에 두지 않음.
