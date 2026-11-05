@@ -230,3 +230,4 @@
 - RLS test DB role simulation: 학생 본인 1 session/5 attempts, 다른 authenticated 계정 0/0, anon은 practice 테이블 SELECT 권한 거부. SQL 쓰기 없음.
 - staging repo `.github/workflows/staging.yml`에 테스트 전용 배포 출처를 설명하는 주석 추가(동작 변경 없음), 이후 성공 배포. 운영 사이트/DB 변경 없음.
 - 모바일 실제 뷰포트 검증 미실행. 사용자 인증 재개 및 최종 확인 대기.
+- 2026-11-05: index.html 서버 기록 새로고침 버튼, src/main.js 사용자 ID 재검증·중복 클릭 방지·상태 안내, tests/account-history.test.mjs 회귀 검사 추가. develop 반영, 운영 DB/사이트 변경 없음.
