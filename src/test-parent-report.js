@@ -85,7 +85,11 @@ $('parent-reset').addEventListener('click',async()=>{
   const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
   if(error)throw error;
   state('재설정 메일을 요청했습니다. 가장 최근 메일의 링크를 한 번만 열어 주세요.');
- }catch(e){state('재설정 요청 실패: '+e.message)}
+ }catch(e){
+  if(e?.status===429||e?.code==='over_email_send_rate_limit'||/email rate limit exceeded/i.test(e?.message||'')){
+   state('테스트 이메일 발송 한도를 초과했습니다. 잠시 후 다시 시도해 주세요. 버튼을 반복해서 누르지 마세요.');
+  }else state('재설정 요청 실패: '+e.message);
+ }
  finally{busy=false;controls()}
 });
 $('parent-recovery').addEventListener('submit',async event=>{
