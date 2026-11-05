@@ -174,3 +174,5 @@
 - 가상 사용자 INSERT는 auth.users FK 부재로 실패. 실제 두 계정 교차 접근 검증은 미실행. 검증 완료 아님.
 
 - 테스트 DB SQL: B의 A 세션 조회 및 A 소유 세션 INSERT 차단 성공 (트랜잭션 롤백). RPC 생성 및 SECURITY INVOKER 조회 성공. RPC 실제 저장 통합 호출은 안전 검사 차단으로 미실행. GitHub CI 성공.
+
+- 테스트 전용 브라우저 화면 및 격리 단위 테스트 추가. 테스트 Supabase 보안 advisor 경고 0건. 실제 브라우저 로그인·저장·재조회는 미검증.
