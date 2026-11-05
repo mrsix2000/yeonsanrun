@@ -25,3 +25,8 @@ export function summarizeChildPractice(records,now=new Date()){
 export function parentReportNotice(linkedCount){
  return linkedCount?'연결된 자녀의 서버 학습 기록 조회는 권한 검증 후 제공됩니다.':'연결된 자녀가 없습니다.';
 }
+
+export function resetParentReportView(children,summary){
+ children.replaceChildren();
+ summary.textContent='자녀를 선택하면 기록이 표시됩니다.';
+}
