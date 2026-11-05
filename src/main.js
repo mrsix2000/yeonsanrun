@@ -1,4 +1,4 @@
-import {serverHistoryEnabled,saveCompletedPractice,fetchAccountPractice} from './account-history.js?v=010-1';
+import {serverHistoryEnabled,saveCompletedPractice,fetchAccountPractice,shouldRefreshAccountHistory} from './account-history.js?v=010-1';
 import {adminReadiness} from './admin-readiness.js?v=010-1';
 import {PLAN_OPTIONS,planPreview,subscriptionPreview} from './billing-preview.js?v=010-1';
 import {studentDashboard,parentDashboard,sessionTrend} from './dashboards.js?v=010-1';
@@ -56,7 +56,7 @@ $('menu-toggle').addEventListener('click',()=>{
   $('menu-toggle').setAttribute('aria-expanded',String(open));
 });
 let storedRecords=loadHistory(localStorage);
-let accountRecords=[],accountHistoryUser=null,accountHistoryRequest=0;
+let accountRecords=[],accountHistoryUser=null,accountHistoryRequest=0,accountHistoryInitialized=false;
 const activeRecords=()=>accountHistoryUser?accountRecords:storedRecords;
 async function refreshAccountHistory(user){
  const request=++accountHistoryRequest;
@@ -291,7 +291,10 @@ async function refreshProfile(session){
 }
 function displaySession(session){
  const nextUser=session?.user?.id||null;
- if(nextUser!==accountHistoryUser)void refreshAccountHistory(session?.user||null);
+ if(shouldRefreshAccountHistory(accountHistoryUser,nextUser,accountHistoryInitialized)){
+  accountHistoryInitialized=true;
+  void refreshAccountHistory(session?.user||null);
+ }
  const loggedIn=!!session?.user?.id;
  $('auth-member').hidden=!loggedIn;
  $('profile-section').hidden=!loggedIn;
