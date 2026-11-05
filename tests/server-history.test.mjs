@@ -25,3 +25,20 @@ test('schema enables RLS and restricts rows to auth uid',()=>{
  assert.match(sql,/foreign key \(session_id,user_id\)/);
  assert.doesNotMatch(sql,/grant[^;]*update/i);
 });
+
+test('upload uses one atomic RPC and rejects mismatched user',async()=>{
+ const {uploadPracticeSession}=await import('../src/server-history.js');
+ const record={mode:'free',at:'2026-11-05T00:00:00Z',attempts:Array.from({length:5},()=>({typeId:'natural.add',correct:true,durationMs:100}))};
+ let called=0;
+ const client={auth:{getUser:async()=>({data:{user:{id:'user-1'}},error:null})},rpc:async(name,args)=>{called++;assert.equal(name,'save_practice_result');assert.equal(args.p_attempts.length,5);return {data:'session-id',error:null}}};
+ assert.equal(await uploadPracticeSession(client,record,'user-1'),'session-id');
+ assert.equal(called,1);
+ await assert.rejects(uploadPracticeSession(client,record,'user-2'),/소유자/);
+ assert.equal(called,1);
+});
+test('test SQL uses invoker and authenticated-only execute',()=>{
+ const sql=readFileSync(new URL('../docs/PRACTICE_HISTORY_RPC_TEST.sql',import.meta.url),'utf8');
+ assert.match(sql,/security invoker/);
+ assert.match(sql,/grant execute[^;]*to authenticated/);
+ assert.match(sql,/revoke all[^;]*from public,anon/);
+});
