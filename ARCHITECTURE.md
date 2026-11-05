@@ -159,3 +159,5 @@
 - 정정: 테스트 학부모 비밀번호 복구는 기본 Supabase 이메일 링크(resetPasswordForEmail, PASSWORD_RECOVERY 이벤트, updateUser)를 사용하며 SMTP/OTP 템플릿 변경은 요구하지 않음.
 
 - 학부모 테스트 복구의 Supabase 기본 이메일 발송은 서비스 측 429 제한을 받을 수 있음. 프런트엔드는 제한 오류를 안내하며 비밀키/관리자 인증을 브라우저에 두지 않음.
+
+- 026~030 계정 기록: src/account-history.js가 서버 어댑터를 호출하며 테스트 Supabase URL과 정확히 일치할 때만 서버 요청 허용. staging GitHub Actions는 npm test 이후 배포 아티팩트의 공개 Supabase 설정을 테스트 프로젝트로 치환. 운영 소스 config는 기존 운영값 유지. 비로그인 로컬 기록과 로그인 계정 서버 기록은 별도 표시, 자동 병합 없음.
