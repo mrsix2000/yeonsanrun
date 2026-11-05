@@ -285,3 +285,14 @@
 - yeonsanrun-test 읽기 전용 확인: parent_report_grants 0건, practice_sessions 1건, practice_attempts 5건. 학습 기록 삭제·수정 없음.
 - tests/parent-report-server.test.mjs에 타 계정 인증 거부, grant 조회 오류, 기록 조회 오류, 최대 조회 제한 및 승인된 빈 기록 회귀 사례 추가. develop commit 76e0d77b16454f7be0da1167679d78cb557333e6.
 - 신규 자동 테스트 실행: CI 결과 확인 전까지 미확인. 실제 연결 자녀 리포트 브라우저 E2E: 미실행. 운영 DB/사이트 미변경.
+
+
+## 2026-11-05 학생 서버 기록 및 부모 연결 리포트 재개 결과
+- 성공(사전): 최신 develop CI `42009091989` 및 staging 배포 `42003764097` success. staging 로그인 화면 정상 표시, deploy workflow의 test-project 설정 적용 경로 기존 문서/코드에서 확인.
+- 성공(기존 기록 유지, 재실행 안 함): 학부모 로그인·새로고침 세션 유지·로그아웃·재로그인·연결 자녀 0건 조회, guest 5문제/로컬 기록 유지, test DB RLS 교차 계정 검증.
+- 미실행(학생 인증): 안전 인증 요청 후 화면 계정이 요청 학생과 달라 로그아웃. 학생 이메일만 안전 입력해 재확인했으나 값 일치 확인 실패. 비밀번호 입력, 로그인 신호 확인, 5문제 풀이, 서버 기록 +1 session/+5 attempts, 학습 기록 화면, 서버 새로고침, 재로그인/페이지 새로고침 검증 모두 미실행.
+- DB 성공(읽기 전후 보존 확인): yeonsanrun-test practice_sessions 1, practice_attempts 5, parent_report_grants 0. 신규 데이터 없음. 기존 기록 수정·삭제 없음.
+- 미실행(부모 양성 리포트): 이전에 승인된 임시 연결 범위는 보존하되 이번 회차에서는 grant를 만들지 않음. 연결 자녀 목록, 정확도·속도·취약 유형 표시, 미연결 차단/해제 후 차단은 검증하지 않음. 현재 임시 연결 0건. 기존 SQL 역할 시뮬레이션 성공은 유지.
+- 미실행: 모바일 뷰포트/기기 검증.
+- 오류/조치: 기능 코드 오류나 Actions 실패는 확인되지 않아 코드 및 DB 스키마를 변경하지 않음. staging auth UI의 student_profiles/family_links schema-cache 누락 경고는 관찰했으나 이번 흐름과 분리해 처리 보류.
+- 최종 판정: 구현 완료·미검증. 계정 일치가 확인된 안전 인증 입력과 서버 E2E, 이후 승인된 임시 연결 양성 브라우저 검증 및 사용자 최종 승인이 남음.
