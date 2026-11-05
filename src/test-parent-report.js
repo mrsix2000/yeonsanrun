@@ -1,6 +1,6 @@
 // Test-only parent report UI. All database reads use the test project.
 import {loadLinkedChildReport} from './parent-report-server.js?v=010-1';
-import {resetParentReportView} from './parent-report.js?v=010-2';
+import {resetParentReportView} from './parent-report.js?v=010-1';
 const URL='https://cjrvoamwejcpmhyejamn.supabase.co';
 const KEY='sb_publishable_ti3tRCDlXvazkCMC6Xz1bQ_SfcGjbeM';
 const $=id=>document.getElementById(id);
@@ -120,4 +120,3 @@ $('parent-recovery').addEventListener('submit',async event=>{
  }catch(e){state('비밀번호 변경 실패: '+e.message)}
  finally{busy=false;controls()}
 });
-
