@@ -185,3 +185,10 @@
 - 테스트 staging 로그인은 `browserAuth` 안전 흐름만 사용. 제출 후 화면에 나타난 사용자 계정이 요청 대상과 다르면 인증 성공으로 간주하지 않고 보호되는 학습 동작을 중단한다.
 - 이번 검증에서 화면 계정은 요청 학생 계정과 불일치. 해당 세션 로그아웃; 학생 이메일 재입력도 요청 계정과 일치하지 않아 추가 인증 중단. 비밀번호는 모델이 읽거나 입력하지 않음.
 - test DB는 기존 1 session/5 attempts, parent_report_grants 0건. 임시 연결은 검증 시작 전 생성하지 않음; 기존 학습 기록 보존.
+
+
+## 2026-11-05 학생 인증 재개 차단 상태
+- test Auth에서 지정 학생 계정 존재와 email confirmation을 읽기 전용으로 확인.
+- staging 로그인 전 세션은 guest. 로그인 이메일을 비운 뒤 Work 안전 입력을 요청했으나 화면 값이 대상 계정과 불일치하여 로그인 전 중단. 비밀번호 필드는 건드리지 않음.
+- staging form의 email 입력은 autocomplete=email 속성이지만 이번에는 기존 입력을 비우고 안전 입력만 사용. 안전 입력 결과가 계속 불일치하여 코드/설정 변경이나 추가 재시도는 하지 않음.
+- DB count는 session 1 / attempts 5 / parent_report_grants 0으로 그대로 유지.
