@@ -113,3 +113,5 @@
 - 부모 조회 정책은 의도적으로 미구현. 운영 DB 변경 없음.
 
 - 테스트 DB에 public.save_practice_result SECURITY INVOKER RPC 적용. 5개 문항을 단일 DB 트랜잭션으로 저장하도록 src/server-history.js 어댑터 변경. 운영 DB/UI 미연결.
+
+- test-history.html: 운영 화면과 분리된 테스트 전용 인증·5문항 서버 저장·조회 페이지. src/test-history.js는 yeonsanrun-test의 공개 publishable 키만 사용하며 운영 Supabase와 연결하지 않음.
