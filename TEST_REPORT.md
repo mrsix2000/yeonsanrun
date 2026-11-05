@@ -164,3 +164,7 @@
 ## 041~050 검증 범위
 - tests/admin-readiness.test.mjs, tests/release-gates.test.mjs 추가. 관리자 준비 화면 연결, 기본 출시 차단, 필수 증빙 누락 시 출시 차단 검증.
 - CI 확인 별도. 실제 관리자 권한/RLS, 결제·환불, 모바일 실기기, 스테이징 E2E 미실행. 상용 출시 불가.
+
+## 계정별 서버 기록 초안 테스트
+- tests/server-history.test.mjs: 소유권 필드, 문항 순번, 읽기 필터/상한, SQL RLS 정책 문자열 검증.
+- 실제 DB 적용/RLS 두 계정 침투 테스트/트랜잭션 실패 복구/브라우저 서버 저장 미실행. 운영 적용 금지.
