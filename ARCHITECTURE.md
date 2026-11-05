@@ -155,3 +155,5 @@
 - grant를 제거한 뒤 부모의 grant/세션/시도 조회가 모두 0건으로 돌아왔고, 학생 본인 attempt 5건은 유지됨. 테스트 종료 후 grant는 0건.
 - 이 검증은 SQL RLS 역할 시뮬레이션이며 브라우저 화면 검증을 대체하지 않음. 학부모 로그인 오류로 실제 UI 수치 렌더링 미검증.
 - 테스트 전용 학부모 복구: test-parent-report.html → src/test-parent-report.js → Supabase test Auth resetPasswordForEmail → verifyOtp(type=recovery) → updateUser. 운영 DB와 분리. Recovery 메일 템플릿에 {{ .Token }} 필수.
+
+- 정정: 테스트 학부모 비밀번호 복구는 기본 Supabase 이메일 링크(resetPasswordForEmail, PASSWORD_RECOVERY 이벤트, updateUser)를 사용하며 SMTP/OTP 템플릿 변경은 요구하지 않음.
