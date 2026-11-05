@@ -134,3 +134,5 @@
 - src/parent-report.js: 권한 검증을 마친 서버 데이터만 집계하는 순수 함수. docs/PARENT_REPORT_ACCESS_DRAFT.sql은 권한 우회 없는 fail-closed 설계 초안으로 미적용.
 
 - 테스트 DB: parent_report_grants (관리자만 연결 생성·삭제, authenticated SELECT만), practice_sessions/attempts에 연결된 학부모 읽기 정책. src/parent-report-server.js는 연결 여부 확인 후 자녀 ID로 조회. 운영에서는 기존 family_links를 사용하도록 재설계 필요.
+
+- 스테이징 전용 test-parent-report.html: Supabase 테스트 프로젝트 공개 키만 사용. parent_report_grants에서 연결된 자녀 목록 조회 후 RLS로 허용된 학습 기록만 집계 표시. 운영 index와 분리.
