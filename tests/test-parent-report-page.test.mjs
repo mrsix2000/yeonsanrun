@@ -12,7 +12,13 @@ test('test client never uses production project',()=>{
  assert.match(js,/cjrvoamwejcpmhyejamn/);
  assert.doesNotMatch(js,/phydtapmwwonunqgaupx/);
  const index=readFileSync(new URL('../index.html',import.meta.url),'utf8');
- assert.doesNotMatch(index,/test-parent-report.html/);
+ const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
+ const recovery=index.match(/<p id="auth-recovery-help"[^>]*>[\\s\\S]*?<\\/p>/)?.[0]||'';
+ assert.match(recovery,/hidden/);
+ assert.match(recovery,/href="\\.\\/test-parent-report\\.html"/);
+ assert.match(main,/auth-recovery-help'\\)\\.hidden=!serverHistoryEnabled\\(\\)/);
+ const navigation=index.match(/<nav[^>]*>[\\s\\S]*?<\\/nav>/)?.[0]||'';
+ assert.doesNotMatch(navigation,/test-parent-report\\.html/);
 });
 
 test('default recovery link flow requires no custom SMTP template',()=>{
