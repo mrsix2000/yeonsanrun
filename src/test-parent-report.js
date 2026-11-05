@@ -1,5 +1,6 @@
 // Test-only parent report UI. All database reads use the test project.
 import {loadLinkedChildReport} from './parent-report-server.js?v=010-1';
+import {resetParentReportView} from './parent-report.js?v=010-2';
 const URL='https://cjrvoamwejcpmhyejamn.supabase.co';
 const KEY='sb_publishable_ti3tRCDlXvazkCMC6Xz1bQ_SfcGjbeM';
 const $=id=>document.getElementById(id);
@@ -11,16 +12,15 @@ function controls(){
  $('parent-recovery').hidden=!recoveryReady;
 }
 function reset(){
- revision++;$('parent-children').replaceChildren();
- $('parent-summary').textContent='자녀를 선택하면 기록이 표시됩니다.';
+ revision++;resetParentReportView($('parent-children'),$('parent-summary'));
 }
 async function loadChildren(){
  if(!user)return;
  const id=user.id,token=revision;
+ resetParentReportView($('parent-children'),$('parent-summary'));
  const {data,error}=await client.from('parent_report_grants').select('student_user_id,created_at').eq('parent_user_id',id).order('created_at',{ascending:false});
  if(error)throw error;
  if(token!==revision||user?.id!==id)return;
- $('parent-children').replaceChildren();
  if(!data?.length){const li=document.createElement('li');li.textContent='승인된 자녀 연결이 없습니다.';$('parent-children').append(li);state('자녀 연결 0건');return}
  for(const grant of data){
   const li=document.createElement('li'),button=document.createElement('button');
