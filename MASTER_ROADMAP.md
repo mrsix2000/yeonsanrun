@@ -57,3 +57,5 @@
 - 스테이징 `test-history.html` 접속 및 테스트 프로젝트 분리 확인. `src/test-history.js`는 `cjrvoamwejcpmhyejamn`(yeonsanrun-test)을 가리키며 운영 프로젝트 `phydtapmwwonunqgaupx` 설정과 분리됨.
 - 실제 브라우저에서 가입 요청은 성공했고 테스트 프로젝트 `auth.users`에서 해당 계정 생성 및 `email_confirmed_at IS NULL`을 확인. 로그인은 `Email not confirmed`로 막힘.
 - 계정별 저장·로그아웃·재로그인·기록 조회는 미실행. 코드 오류는 확인되지 않아 코드 변경/배포 없음. 테스트 DB 외 쓰기 없음.
+
+- 2026-11-05 재개 시도: 사용자 제공 이메일은 Supabase Auth `email rate limit exceeded`로 가입되지 않음 (yeonsanrun-test `auth.users` 조회 결과 해당 주소 0건). 55초 대기 후 1회 재시도했으나 동일 오류. E2E는 확인메일 발송 제한으로 차단 상태 유지.
