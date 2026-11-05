@@ -136,3 +136,11 @@
 - 테스트 DB: parent_report_grants (관리자만 연결 생성·삭제, authenticated SELECT만), practice_sessions/attempts에 연결된 학부모 읽기 정책. src/parent-report-server.js는 연결 여부 확인 후 자녀 ID로 조회. 운영에서는 기존 family_links를 사용하도록 재설계 필요.
 
 - 스테이징 전용 test-parent-report.html: Supabase 테스트 프로젝트 공개 키만 사용. parent_report_grants에서 연결된 자녀 목록 조회 후 RLS로 허용된 학습 기록만 집계 표시. 운영 index와 분리.
+
+
+## 학부모 리포트 테스트 환경 검증 기록 (2026-11-05)
+- `test-parent-report.html` 및 `src/test-parent-report.js`는 `yeonsanrun-test`만 참조하며 `parent_report_grants` 허용 목록을 통해 자녀를 표시한다.
+- 검증 시 승인된 grant가 0건이면 화면은 연결 0건과 빈 기록 안내를 보인다. 이는 기록 조회 성공이 아니며 정답률/속도/취약 유형 지표가 없는 상태다.
+- 테스트 DB RLS 정책: 부모 SELECT는 grant 존재 시 자녀 세션/시도를 허용하고, 연결이 없으면 부모가 학생 데이터를 볼 수 없다. 학생은 자기 소유 기록만 조회한다.
+- 실제 브라우저에서 연결 0건·로그아웃을 확인했고, SQL 역할 시뮬레이션에서 미연결 학생 기록 차단을 확인. 긍정 연결 경로와 지표 UI는 승인된 연결 데이터 부재로 미검증.
+- 개발/운영의 family_links 통합 및 운영 화면 연결은 미구현 상태를 유지한다.
