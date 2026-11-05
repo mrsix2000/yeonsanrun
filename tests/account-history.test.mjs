@@ -19,5 +19,5 @@ test('main keeps device history and only saves completed sessions after five ans
 test('history UI explains account vs local separation',()=>{
  assert.match(html,/id="server-history-status"/);
  assert.match(html,/두 기록은 자동 합쳐지지 않습니다/);
- assert.match(html,/main\.js\?v=026-2/);
+ assert.match(html,/main\.js\?v=010-1/);
 });
