@@ -132,3 +132,5 @@
 - 이메일 확인 설정을 테스트 후 다시 켜야 함. 브라우저의 Supabase 대시보드는 로그인 벽으로 도구 세션에 접근 불가; 사용자 복구 대기. 운영 프로젝트 설정은 건드리지 않음.
 
 - src/parent-report.js: 권한 검증을 마친 서버 데이터만 집계하는 순수 함수. docs/PARENT_REPORT_ACCESS_DRAFT.sql은 권한 우회 없는 fail-closed 설계 초안으로 미적용.
+
+- 테스트 DB: parent_report_grants (관리자만 연결 생성·삭제, authenticated SELECT만), practice_sessions/attempts에 연결된 학부모 읽기 정책. src/parent-report-server.js는 연결 여부 확인 후 자녀 ID로 조회. 운영에서는 기존 family_links를 사용하도록 재설계 필요.
