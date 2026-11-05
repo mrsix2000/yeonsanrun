@@ -52,6 +52,9 @@ create table if not exists public.family_invites (
 );
 alter table public.family_invites enable row level security;
 revoke all on public.family_invites from public, anon, authenticated;
+drop policy if exists family_invites_deny_api on public.family_invites;
+create policy family_invites_deny_api on public.family_invites
+  for all to anon, authenticated using (false) with check (false);
 
 create table if not exists public.family_link_attempts (
   parent_user_id uuid primary key references auth.users(id) on delete cascade,
@@ -60,6 +63,9 @@ create table if not exists public.family_link_attempts (
 );
 alter table public.family_link_attempts enable row level security;
 revoke all on public.family_link_attempts from public, anon, authenticated;
+drop policy if exists family_link_attempts_deny_api on public.family_link_attempts;
+create policy family_link_attempts_deny_api on public.family_link_attempts
+  for all to anon, authenticated using (false) with check (false);
 
 create or replace function public.create_family_invite()
 returns text
