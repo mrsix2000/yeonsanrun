@@ -219,3 +219,14 @@
 - 2026-11-05: test parent recovery 요청 429 over_email_send_rate_limit 확인. 이메일 복구 E2E는 보류하고, UI에 발송 제한·재시도 안내 및 자동 테스트 추가. 독립 작업 계속 진행.
 
 - 2026-11-05: src/account-history.js 신설, src/main.js/index.html 수정, tests/account-history.test.mjs 신설. 완료 5문제 로컬 저장 유지 후 로그인 사용자에 한해 테스트 서버 RPC 업로드, 로그인 시 계정별 조회. staging workflow 테스트 DB 격리 변경. 실제 브라우저 사용자 검수 전까지 미검증.
+
+
+## 2026-11-05 026~030 통합 브라우저 검증 및 수정
+- 스테이징 메인 화면과 학습 기록 화면 정상 표시. staging workflow run 41978712676 성공; workflow가 배포본에 테스트 DB 설정만 넣도록 구성되고 운영 프로젝트 ref 제외 검사를 수행함. 브라우저 기록 화면의 로그인 전 서버 상태 문구 정상 확인.
+- 비로그인 브라우저 훈련 5문항 제출: 5/5 정답, 100%, 총 20.8초. `학습 기록` 화면에 1회·5문제·100%·평균 4.2초/문항 표시. 화면 새로고침 뒤 같은 로컬 기록 유지.
+- 결함: 최초 비로그인 인증 상태에서 `accountHistoryUser=null`와 초기 `null`이 같아 `refreshAccountHistory(null)`을 건너뛰고 서버 상태가 '연결 확인 중'에 머물렀음.
+- 수정 파일: `src/account-history.js`(shouldRefreshAccountHistory), `src/main.js`(최초 auth 초기화), `tests/account-history.test.mjs`(guest 초기화/identity 변경 회귀 테스트). develop CI run 41978367901 성공.
+- 사용자 안전 인증 요청은 취소됨. 학생 계정 로그인, 서버 세션 신규 저장, 서버 조회, 로그아웃/재로그인 흐름은 미실행. 테스트 DB 기존 기록 1 session/5 attempts 유지. guest session은 서버에 저장되지 않음.
+- RLS test DB role simulation: 학생 본인 1 session/5 attempts, 다른 authenticated 계정 0/0, anon은 practice 테이블 SELECT 권한 거부. SQL 쓰기 없음.
+- staging repo `.github/workflows/staging.yml`에 테스트 전용 배포 출처를 설명하는 주석 추가(동작 변경 없음), 이후 성공 배포. 운영 사이트/DB 변경 없음.
+- 모바일 실제 뷰포트 검증 미실행. 사용자 인증 재개 및 최종 확인 대기.
